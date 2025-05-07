@@ -1,0 +1,6 @@
+@OpenGameSocial.GameApi_HostAddress = http://localhost:5211
+
+GET {{OpenGameSocial.GameApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
