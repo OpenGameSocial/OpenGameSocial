@@ -11,6 +11,7 @@ workspace "SDK"
 
     targetdir ("Build/" .. os.target() .. "/%{cfg.buildcfg}")
     objdir ("Intermediate/" .. os.target())
+    cppdialect "C++20"
 
 function ApplyDebugSettings()
     defines { "DEBUG" }
@@ -64,6 +65,18 @@ function ApplyPlatforms()
         system "Windows"
         architecture "x86_64"
 
+        filter("configurations:DebugShared")
+            buildoptions { "/MTd" }
+
+        filter("configurations:DebugStatic")
+            buildoptions { "/MTd" }
+
+        filter("configurations:ReleaseShared")
+            buildoptions { "/MT" }
+
+        filter("configurations:ReleaseStatic")
+            buildoptions { "/MT" }
+
     filter { "platforms:MacOSX" }
         system "macosx"
         architecture "ARM64"
@@ -74,9 +87,12 @@ end
 project "OpenGameSocial"
     language "C++"
 
-    files { "Include/**.h", "Source/**.h", "Source/**.cpp" }
+    files {
+        "Include/**.h", "Source/**.h", "Source/**.cpp",
+        "Platform/%{cfg.platform}/**.h", "Platform/%{cfg.platform}/**.cpp"
+    }
 
-    includedirs { "Include", "Source" }
+    includedirs { "Include", "Source", "Platform/%{cfg.platform}" }
 
     ApplyConfiguration(true)
 
@@ -94,3 +110,7 @@ project "IntegrationTestingTool"
     ApplyConfiguration(false)
 
     ApplyPlatforms()
+
+project "SolutionFiles"
+	kind "utility"
+	files { "premake5.lua", ".gitignore" }

@@ -9,3 +9,5 @@ Build/
 *.DotSettings.user
 Makefile
 *.make
+.luarc.json
+*.vcxproj.filters
