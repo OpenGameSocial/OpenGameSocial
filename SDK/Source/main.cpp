@@ -1,8 +1,12 @@
 #include <cstdio>
 
-int main()
-{
-    printf("Hello World\n");
+#include "Core.h"
 
-    return 0;
+void Testfunc()
+{
+#ifdef OGS_EXPORTS
+    printf("Hello, World exported!\n");
+#else
+    printf("Hello, World!\n");
+#endif
 }

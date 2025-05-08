@@ -2,6 +2,10 @@
 .vs/
 Intermediate/
 Build/
+*.xcodeproj/
+*.xcworkspacedata
 *.sln
 *.vcxproj
 *.DotSettings.user
+Makefile
+*.make

@@ -1,55 +1,96 @@
 workspace "SDK"
-	configurations {
-		"DebugShared",
-		"DebugStatic",
-		
-		"ReleaseShared",
-		"ReleaseStatic"
-	}
+    configurations {
+        "DebugShared",
+        "DebugStatic",
 
-	platforms { "Win64", "MacOSX" }
-	
+        "ReleaseShared",
+        "ReleaseStatic"
+    }
+
+    platforms { "Win64", "MacOSX" }
+
+    targetdir ("Build/" .. os.target() .. "/%{cfg.buildcfg}")
+    objdir ("Intermediate/" .. os.target())
+
 function ApplyDebugSettings()
-	defines { "DEBUG" }
-	symbols "On"
+    defines { "DEBUG" }
+    symbols "On"
 end
 
 function ApplyReleaseSettings()
-	defines { "NDEBUG" }
-	optimize "On"
+    defines { "NDEBUG" }
+    optimize "On"
 end
 
-function ApplyConfiguration()
-	filter "configurations:DebugShared"
-		kind "SharedLib"
-		ApplyDebugSettings()
+function ApplyConfiguration(libTarget)
+    local sharedKind = libTarget and "SharedLib" or "ConsoleApp"
+    local staticKind = libTarget and "StaticLib" or "ConsoleApp"
 
-	filter "configurations:DebugStatic"
-		kind "StaticLib"
-		ApplyDebugSettings()
+    filter "configurations:DebugShared"
+        kind (sharedKind)
+        defines { "OGS_SHARED" }
 
-	filter "configurations:ReleaseShared"
-		kind "SharedLib"
-		ApplyReleaseSettings()
+        if libTarget then
+            defines { "OGS_EXPORTS" }
+        end
 
-	filter "configurations:ReleaseStatic"
-		kind "StaticLib"
-		ApplyReleaseSettings()
+        ApplyDebugSettings()
+
+    filter "configurations:DebugStatic"
+        defines { "OGS_STATIC" }
+        kind (staticKind)
+        ApplyDebugSettings()
+
+    filter "configurations:ReleaseShared"
+        defines { "OGS_SHARED" }
+        kind (sharedKind)
+
+        if libTarget then
+            defines { "OGS_EXPORTS" }
+        end
+
+        ApplyReleaseSettings()
+
+    filter "configurations:ReleaseStatic"
+        defines { "OGS_STATIC" }
+        kind (staticKind)
+        ApplyReleaseSettings()
+
+    filter {}
+end
+
+function ApplyPlatforms()
+    filter { "platforms:Win64" }
+        system "Windows"
+        architecture "x86_64"
+
+    filter { "platforms:MacOSX" }
+        system "macosx"
+        architecture "ARM64"
+
+    filter {}
 end
 
 project "OpenGameSocial"
-	language "C++"
-	targetdir ("Build/" .. os.target() .. "/%{cfg.buildcfg}")
-	objdir ("Intermediate/" .. os.target())
+    language "C++"
 
-	files { "**.h", "**.cpp" }
+    files { "Include/**.h", "Source/**.h", "Source/**.cpp" }
 
-	ApplyConfiguration()
+    includedirs { "Include", "Source" }
 
-	filter { "platforms:Win64" }
-		system "Windows"
-		architecture "x86_64"
+    ApplyConfiguration(true)
 
-	filter { "platforms:MacOSX" }
-		system "macosx"
-		architecture "ARM64"
+    ApplyPlatforms()
+
+project "IntegrationTestingTool"
+    language "C++"
+
+    files { "Testing/**.h", "Testing/**.cpp" }
+
+    includedirs { "Include", "Testing" }
+
+    links { "OpenGameSocial" }
+
+    ApplyConfiguration(false)
+
+    ApplyPlatforms()

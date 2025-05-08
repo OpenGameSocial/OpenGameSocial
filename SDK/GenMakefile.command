@@ -1,0 +1,1 @@
+./Premake5/premake5.mac gmake
