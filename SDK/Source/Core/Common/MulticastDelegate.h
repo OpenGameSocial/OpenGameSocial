@@ -11,35 +11,38 @@ namespace OGS
     public:
         CDelegateHandle() = default;
 
-        CDelegateHandle(int32_t InIndex, int32_t InSerial)
-            : Index(InIndex),
-              Serial(InSerial)
+        CDelegateHandle(uint32_t InDelegateSerial, uint32_t InSerial)
+            : DelegateSerial(InDelegateSerial), Serial(InSerial)
         {
         }
 
-        void Reset()
+        void Invalidate()
         {
-            *this = {};
+            DelegateSerial = InvalidSerial;
+            Serial = InvalidSerial;
         }
 
         [[nodiscard]] bool IsValid() const
         {
-            return Index != -1;
+            return DelegateSerial != InvalidSerial && Serial != InvalidSerial;
         }
 
-        [[nodiscard]] int32_t GetIndex() const
+        [[nodiscard]] uint32_t GetDelegateSerial() const
         {
-            return Index;
+            return DelegateSerial;
         }
 
-        [[nodiscard]] int32_t GetSerial() const
+        [[nodiscard]] uint32_t GetSerial() const
         {
             return Serial;
         }
 
+    public:
+        static constexpr uint32_t InvalidSerial = std::numeric_limits<uint32_t>::max();
+
     private:
-        int32_t Index = -1;
-        int32_t Serial = 0;
+        uint32_t DelegateSerial = InvalidSerial;
+        uint32_t Serial = InvalidSerial;
     };
 
     template <typename ... TArgs>
@@ -48,13 +51,27 @@ namespace OGS
         struct SCallableSlot
         {
         public:
-            int32_t Serial = 0;
+            [[nodiscard]] bool IsValid() const
+            {
+                return Serial != CDelegateHandle::InvalidSerial && Callable;
+            }
+
+            void Invalidate()
+            {
+                Serial = CDelegateHandle::InvalidSerial;
+                Callable = {};
+            }
+
+        public:
+            uint32_t Serial = CDelegateHandle::InvalidSerial;
             std::function<bool(TArgs ...)> Callable;
         };
 
     public:
         void Broadcast(TArgs ... args)
         {
+            size_t InvalidCount = 0;
+
             for (size_t Index = InvocationList.size(); Index-- > 0;)
             {
                 SCallableSlot& Slot = InvocationList[Index];
@@ -62,7 +79,7 @@ namespace OGS
                 // Empty slot, erase it
                 if (!Slot.Callable)
                 {
-                    InvocationList.erase(InvocationList.begin() + Index);
+                    ++InvalidCount;
                     continue;
                 }
 
@@ -71,16 +88,30 @@ namespace OGS
                     continue;
                 }
 
-                // Callable has failed owner lifetime check, erase it
-                InvocationList.erase(InvocationList.begin() + Index);
+                Slot.Invalidate();
+                ++InvalidCount;
             }
+
+            if (InvalidCount == 0)
+            {
+                return;
+            }
+
+            InvocationList.erase(
+                std::remove_if(InvocationList.begin(), InvocationList.end(),
+                               [](const SCallableSlot& Slot)
+                               {
+                                   return !Slot.Callable;
+                               }),
+                InvocationList.end()
+            );
         }
 
         bool Remove(CDelegateHandle& InHandle)
         {
-            if (InHandle.IsValid() && Remove(InHandle.GetIndex(), InHandle.GetSerial()))
+            if (InHandle.IsValid() && Remove(InHandle.GetDelegateSerial(), InHandle.GetSerial()))
             {
-                InHandle.Reset();
+                InHandle.Invalidate();
                 return true;
             }
 
@@ -89,7 +120,7 @@ namespace OGS
 
         bool Remove(const CDelegateHandle& InHandle)
         {
-            return InHandle.IsValid() && Remove(InHandle.GetIndex(), InHandle.GetSerial());
+            return InHandle.IsValid() && Remove(InHandle.GetDelegateSerial(), InHandle.GetSerial());
         }
 
         CDelegateHandle AddStatic(void (*InCallable)(TArgs ...))
@@ -137,7 +168,7 @@ namespace OGS
 
             auto Callable = [WeakOwner, InCallable = std::forward<TCallable>(InCallable)](TArgs ... Args)
             {
-                if (std::shared_ptr<TOwner> _ = WeakOwner.lock())
+                if (auto Lock = WeakOwner.lock())
                 {
                     InCallable(std::forward<TArgs>(Args) ...);
                     return true;
@@ -153,37 +184,40 @@ namespace OGS
         CDelegateHandle EmplaceSlot(std::function<bool(TArgs ...)>&& InCallable)
         {
             const auto Serial = ++SerialCounter;
-            const auto Index = static_cast<int32_t>(InvocationList.size());
 
             InvocationList.emplace_back(Serial, std::move(InCallable));
 
-            return {Index, Serial};
+            return {DelegateSerial, Serial};
         }
 
-        bool Remove(int32_t InIndex, int32_t InSerial)
+        bool Remove(uint32_t InDelegateSerial, uint32_t InSerial)
         {
-            if (InIndex < 0)
+            if (InDelegateSerial != DelegateSerial)
             {
+                // It is handle from different delegate
                 return false;
             }
 
-            if (static_cast<size_t>(InIndex) >= InvocationList.size())
+            for (size_t Index = 0; Index < InvocationList.size(); ++Index)
             {
-                return false;
+                auto& Slot = InvocationList[Index];
+                
+                if (Slot.Serial == InSerial)
+                {
+                    Slot.Invalidate();
+                    return true;
+                }
             }
 
-            if (InvocationList[InIndex].Serial != InSerial)
-            {
-                return false;
-            }
-
-            InvocationList.erase(InvocationList.begin() + InIndex);
-
-            return true;
+            return false;
         }
 
     private:
-        int32_t SerialCounter = 0;
+        static inline std::atomic<uint32_t> DelegateSerialCounter = 0;
+
+        uint32_t DelegateSerial = ++DelegateSerialCounter;
+        uint32_t SerialCounter = 0;
+
         std::vector<SCallableSlot> InvocationList;
     };
 
