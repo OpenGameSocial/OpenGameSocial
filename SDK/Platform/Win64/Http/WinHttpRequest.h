@@ -10,46 +10,56 @@
 
 namespace OGS::Http
 {
-    class CWinHttpRequest final
+    namespace Win64
     {
-    public:
-        static std::shared_ptr<CWinHttpRequest> Create();
-
-        ~CWinHttpRequest();
-
-        void SetUrl(const std::wstring& InUrl)
+        class CWinHttpRequest final
         {
-            Url.Parse(InUrl);
-        }
+        public:
+            static std::shared_ptr<CWinHttpRequest> Create();
 
-        void SetMethod(const std::wstring& InMethod)
-        {
-            Method = InMethod;
-        }
+            ~CWinHttpRequest();
 
-        bool Run();
+            void SetUrl(const std::wstring& InUrl)
+            {
+                Url.Parse(InUrl);
+            }
 
-    private:
-        CWinHttpRequest();
+            void SetMethod(const std::wstring& InMethod)
+            {
+                Method = InMethod;
+            }
 
-        static void WinHttpCallback(
-            HINTERNET hInternet,
-            DWORD_PTR dwContext,
-            DWORD dwInternetStatus,
-            LPVOID lpvStatusInformation,
-            DWORD dwStatusInformationLength
-        );
+            [[nodiscard]] bool IsCompleted() const
+            {
+                return bIsCompleted;
+            }
 
-    private:
-        HINTERNET SessionHandle = nullptr;
-        HINTERNET ConnectHandle = nullptr;
-        HINTERNET RequestHandle = nullptr;
+            bool Run();
 
-        Uri Url;
-        std::wstring Method;
+        private:
+            CWinHttpRequest();
 
-        friend std::shared_ptr<CWinHttpRequest>;
-    };
+            static void WinHttpCallback(
+                HINTERNET hInternet,
+                DWORD_PTR dwContext,
+                DWORD dwInternetStatus,
+                LPVOID lpvStatusInformation,
+                DWORD dwStatusInformationLength
+            );
 
-    using CPlatformHttpRequest = CWinHttpRequest;
+        private:
+            bool bIsCompleted = false;
+
+            HINTERNET SessionHandle = nullptr;
+            HINTERNET ConnectHandle = nullptr;
+            HINTERNET RequestHandle = nullptr;
+
+            Uri Url;
+            std::wstring Method;
+
+            friend std::shared_ptr<CWinHttpRequest>;
+        };
+    }
+
+    using CPlatformHttpRequest = Win64::CWinHttpRequest;
 }

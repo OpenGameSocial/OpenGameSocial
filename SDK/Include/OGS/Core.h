@@ -36,3 +36,15 @@
 #else
     #define OGS_API
 #endif
+
+#ifdef PLATFORM_WINDOWS
+    #define DEBUG_BREAK __debugbreak
+#else
+    #define DEBUG_BREAK __builtin_debugtrap
+#endif
+
+#ifdef PLATFORM_WINDOWS
+    #define SNPRINTF(buffer, size, format, ...) _snprintf_s(buffer, size, _TRUNCATE, format, __VA_ARGS__)
+#else
+    #define SNPRINTF(buffer, size, format, ...) snprintf(buffer, size, format, __VA_ARGS__)
+#endif

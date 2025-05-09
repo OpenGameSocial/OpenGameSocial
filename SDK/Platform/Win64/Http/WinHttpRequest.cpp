@@ -5,9 +5,9 @@
 #pragma comment(lib, "winhttp.lib")
 
 
-using namespace OGS::Http;
+using namespace OGS::Http::Win64;
 
-// TODO: implement request manager and move session there
+// TODO: implement request manager
 
 std::shared_ptr<CWinHttpRequest> CWinHttpRequest::Create()
 {
@@ -37,6 +37,12 @@ CWinHttpRequest::~CWinHttpRequest()
 
 bool CWinHttpRequest::Run()
 {
+    if (ConnectHandle != nullptr)
+    {
+        // TODO: logme
+        return false;
+    }
+    
     ConnectHandle = WinHttpConnect(SessionHandle, Url.GetHost().c_str(), Url.GetPort(), 0);
 
     if (ConnectHandle == nullptr)
