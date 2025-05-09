@@ -65,21 +65,26 @@ function ApplyPlatforms()
         system "Windows"
         architecture "x86_64"
 
-        filter("configurations:DebugShared")
+        filter { "platforms:Win64", "configurations:DebugShared" }
             buildoptions { "/MTd" }
 
-        filter("configurations:DebugStatic")
+        filter { "platforms:Win64", "configurations:DebugStatic" }
             buildoptions { "/MTd" }
 
-        filter("configurations:ReleaseShared")
+        filter { "platforms:Win64", "configurations:ReleaseShared" }
             buildoptions { "/MT" }
 
-        filter("configurations:ReleaseStatic")
+        filter { "platforms:Win64", "configurations:ReleaseStatic" }
             buildoptions { "/MT" }
 
     filter { "platforms:MacOSX" }
         system "macosx"
         architecture "ARM64"
+        files { "Platform/%{cfg.platform}/**.mm" }
+        links { "Foundation.framework", "objc" }
+
+    filter { "platforms:MacOSX", "files:**.mm" }
+        compileas "Objective-C++"
 
     filter {}
 end

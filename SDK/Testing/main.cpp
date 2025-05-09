@@ -1,23 +1,30 @@
 #include <thread>
 
 #include "OpenGameSocial.h"
+#include "../Platform/MacOSX/Http/MacHttpRequest.h"
 
 
 static void OnLoginWithOpenId(OGS_Result Result, void* UserObject, const OGS_Account_LoginWithOpenId_CallbackData* Data)
 {
-    __debugbreak();
+    // __builtin_trap();
+}
+
+static void OnRequestCompleted(const std::string& response, const std::string& error){
+    __builtin_trap();
 }
 
 int main()
 {
+    HttpRequest("https://google.com", OnRequestCompleted);
+
     {
-        OGS_Init_Options Options;
+        OGS_Init_Options Options{};
         Options.ThreadPoolSize = 4;
         OGS_Init(&Options);
     }
 
     {
-        OGS_Account_LoginWithOpenId_Options Options;
+        OGS_Account_LoginWithOpenId_Options Options{};
         Options.IdentityService = "Test";
         Options.Token = "testtoken";
 
