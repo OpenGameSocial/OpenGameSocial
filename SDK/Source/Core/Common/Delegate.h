@@ -10,6 +10,8 @@ namespace OGS
     class TDelegate
     {
     public:
+        TDelegate() = default;
+
         bool Execute(TArgs ... args)
         {
             return IsBound() && Callable(std::forward<TArgs>(args) ...);
@@ -17,7 +19,7 @@ namespace OGS
 
         [[nodiscard]] bool IsBound() const
         {
-            return Callable;
+            return static_cast<bool>(Callable);
         }
 
         static TDelegate CreateStatic(void (*InCallable)(TArgs ...))

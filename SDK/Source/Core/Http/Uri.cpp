@@ -3,16 +3,18 @@
 using namespace OGS::Http;
 
 
-Uri::Uri(const std::wstring& Uri)
+Uri::Uri(const std::string& Uri)
 {
     Parse(Uri);
 }
 
-void Uri::Parse(const std::wstring& Uri)
+void Uri::Parse(const std::string& Uri)
 {
     Parsed = false;
 
-    const size_t SchemeEnd = Uri.find(L"://");
+    SourceUri = Uri;
+
+    const size_t SchemeEnd = Uri.find("://");
 
     if (SchemeEnd == std::string::npos)
     {
@@ -25,7 +27,7 @@ void Uri::Parse(const std::wstring& Uri)
     size_t PathStart = Uri.find('/', AuthorityStart);
     size_t AuthorityEnd = (PathStart == std::string::npos) ? Uri.size() : PathStart;
 
-    std::wstring authority = Uri.substr(AuthorityStart, AuthorityEnd - AuthorityStart);
+    std::string authority = Uri.substr(AuthorityStart, AuthorityEnd - AuthorityStart);
     size_t at_pos = authority.find('@');
     if (at_pos != std::string::npos)
     {

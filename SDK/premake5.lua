@@ -61,6 +61,9 @@ function ApplyConfiguration(libTarget)
 end
 
 function ApplyPlatforms()
+    filter { "action:vs*" }
+        buildoptions { "/MP" }
+
     filter { "platforms:Win64" }
         system "Windows"
         architecture "x86_64"
@@ -80,11 +83,7 @@ function ApplyPlatforms()
     filter { "platforms:MacOSX" }
         system "macosx"
         architecture "ARM64"
-        files { "Platform/%{cfg.platform}/**.mm" }
         links { "Foundation.framework", "objc" }
-
-    filter { "platforms:MacOSX", "files:**.mm" }
-        compileas "Objective-C++"
 
     filter {}
 end
@@ -99,9 +98,13 @@ project "OpenGameSocial"
 
     includedirs { "Include", "Source", "Platform/%{cfg.platform}" }
 
+    files { "Platform/%{cfg.platform}/**.mm" }
+
     ApplyConfiguration(true)
 
     ApplyPlatforms()
+
+    filter {}
 
 project "IntegrationTestingTool"
     language "C++"
@@ -115,6 +118,8 @@ project "IntegrationTestingTool"
     ApplyConfiguration(false)
 
     ApplyPlatforms()
+
+    filter {}
 
 project "SolutionFiles"
 	kind "utility"

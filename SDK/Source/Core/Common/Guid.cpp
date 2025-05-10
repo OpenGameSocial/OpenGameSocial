@@ -24,7 +24,7 @@ std::optional<OGS::CGuid> OGS::CGuid::FromString(const std::string& Str)
 {
     CGuid Guid;
 
-    auto ScanResult = sscanf_s(Str.c_str(),
+    auto ScanResult = SSCANF(Str.c_str(),
                                "%2hhx%2hhx%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx-%2hhx%2hhx%2hhx%2hhx%2hhx%2hhx",
                                &Guid.Data[0], &Guid.Data[1], &Guid.Data[2], &Guid.Data[3],
                                &Guid.Data[4], &Guid.Data[5], &Guid.Data[6], &Guid.Data[7],

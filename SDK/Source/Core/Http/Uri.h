@@ -8,28 +8,33 @@ namespace OGS::Http
     class Uri final
     {
     public:
-        explicit Uri(const std::wstring& Uri);
+        explicit Uri(const std::string& Uri);
         
         Uri() = default;
 
-        void Parse(const std::wstring& Uri);
+        void Parse(const std::string& Uri);
 
         [[nodiscard]] bool IsValid() const
         {
             return Parsed;
         }
 
-        [[nodiscard]] std::wstring GetProtocol() const
+        [[nodiscard]] const std::string& ToString() const
+        {
+            return SourceUri;
+        }
+
+        [[nodiscard]] std::string GetProtocol() const
         {
             return Protocol;
         }
 
-        [[nodiscard]] std::wstring GetUserInfo() const
+        [[nodiscard]] std::string GetUserInfo() const
         {
             return UserInfo;
         }
 
-        [[nodiscard]] std::wstring GetHost() const
+        [[nodiscard]] std::string GetHost() const
         {
             return Host;
         }
@@ -39,17 +44,17 @@ namespace OGS::Http
             return Port;
         }
 
-        [[nodiscard]] std::wstring GetPath() const
+        [[nodiscard]] std::string GetPath() const
         {
             return Path;
         }
 
-        [[nodiscard]] std::wstring GetQuery() const
+        [[nodiscard]] std::string GetQuery() const
         {
             return Query;
         }
 
-        [[nodiscard]] std::wstring GetFragment() const
+        [[nodiscard]] std::string GetFragment() const
         {
             return Fragment;
         }
@@ -57,16 +62,18 @@ namespace OGS::Http
     private:
         bool Parsed = false;
 
-        std::wstring Protocol;
+        std::string SourceUri;
 
-        std::wstring UserInfo;
+        std::string Protocol;
 
-        std::wstring Host;
+        std::string UserInfo;
+
+        std::string Host;
         uint16_t Port = 0;
 
-        std::wstring Path;
-        std::wstring Query;
+        std::string Path;
+        std::string Query;
 
-        std::wstring Fragment;
+        std::string Fragment;
     };
 }

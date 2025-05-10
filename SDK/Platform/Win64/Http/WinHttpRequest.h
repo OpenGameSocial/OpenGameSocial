@@ -19,7 +19,7 @@ namespace OGS::Http
 
             ~CWinHttpRequest();
 
-            void SetUrl(const std::wstring& InUrl)
+            void SetUrl(const std::string& InUrl)
             {
                 Url.Parse(InUrl);
             }
@@ -55,7 +55,7 @@ namespace OGS::Http
             HINTERNET RequestHandle = nullptr;
 
             Uri Url;
-            std::wstring Method;
+            std::string Method;
 
             friend std::shared_ptr<CWinHttpRequest>;
         };
