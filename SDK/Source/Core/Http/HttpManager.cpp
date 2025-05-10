@@ -25,6 +25,12 @@ void OGS::Http::CHttpManager::CompleteRequest(const CGuid& InGuid, CHttpResponse
         Requests.erase(It);
     };
 
+    if (Threading::IsMainThread())
+    {
+        DoComplete();
+        return;
+    }
+
     Threading::EnqueueTask(Threading::ETaskThread::MainThread, DoComplete);
 }
 

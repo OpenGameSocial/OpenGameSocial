@@ -2,20 +2,28 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
+
+#include "Core/Common/Guid.h"
+#include "Core/Http/Http.h"
+#include "Core/Http/Uri.h"
+
 #include <windows.h>
 #include <winhttp.h>
 
-#include "Core/Http/Uri.h"
+#include "Core/Http/HttpResponse.h"
 
 
 namespace OGS::Http
 {
+    class CHttpRequest;
+    
     namespace Win64
     {
         class CWinHttpRequest final
         {
         public:
-            static std::shared_ptr<CWinHttpRequest> Create();
+            explicit CWinHttpRequest(const CGuid& InGuid);
 
             ~CWinHttpRequest();
 
@@ -24,9 +32,13 @@ namespace OGS::Http
                 Url.Parse(InUrl);
             }
 
-            void SetMethod(const std::wstring& InMethod)
+            void SetMethod(EHttpMethod InMethod);
+
+            void SetHeader(const std::string& Key, const std::string& Value);
+
+            void SetBody(const std::string& InBody)
             {
-                Method = InMethod;
+                Body = InBody;
             }
 
             [[nodiscard]] bool IsCompleted() const
@@ -34,7 +46,7 @@ namespace OGS::Http
                 return bIsCompleted;
             }
 
-            bool Run();
+            bool Run(const std::shared_ptr<CHttpRequest>& Owner);
 
         private:
             CWinHttpRequest();
@@ -47,15 +59,24 @@ namespace OGS::Http
                 DWORD dwStatusInformationLength
             );
 
+            static CHttpResponse GetFromWinError(DWORD dwErrorCode);
+
         private:
             bool bIsCompleted = false;
+
+            CGuid Guid;
 
             HINTERNET SessionHandle = nullptr;
             HINTERNET ConnectHandle = nullptr;
             HINTERNET RequestHandle = nullptr;
 
             Uri Url;
-            std::string Method;
+            std::wstring Method;
+            std::wstring Headers;
+            std::string Body;
+
+            int32_t ResponseCode = 0;
+            std::string ResponseBody;
 
             friend std::shared_ptr<CWinHttpRequest>;
         };
