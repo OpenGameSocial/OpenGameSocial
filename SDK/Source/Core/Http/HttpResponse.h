@@ -16,6 +16,16 @@ namespace OGS::Http
         {
         }
 
+        [[nodiscard]] int32_t GetCode() const
+        {
+            return Code;
+        }
+
+        [[nodiscard]] const std::string& GetResult() const
+        {
+            return Result;
+        }
+
     private:
         int32_t Code;
         std::string Result;

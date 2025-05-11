@@ -60,8 +60,6 @@ bool CMacHttpRequest::Run(const std::shared_ptr<CHttpRequest>& Owner)
             
             if (data)
             {
-                NSLog(@"Raw data: %@", data);
-
                 const void* Bytes = [data bytes];
                 size_t Size = [data length];
 

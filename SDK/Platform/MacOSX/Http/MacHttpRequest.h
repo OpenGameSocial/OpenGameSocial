@@ -21,6 +21,7 @@ namespace OGS::Http
             explicit CMacHttpRequest(const CGuid& InGuid)
                 : Guid(InGuid)
             {
+                SetMethod(EHttpMethod::GET);
             }
 
             CMacHttpRequest(const CMacHttpRequest&) = delete;
