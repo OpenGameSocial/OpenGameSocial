@@ -51,4 +51,4 @@ project "IntegrationTestingTool"
 
 project "SolutionFiles"
 	kind "utility"
-	files { "premake5.lua", ".gitignore" }
+	files { "**.lua", ".gitignore" }
