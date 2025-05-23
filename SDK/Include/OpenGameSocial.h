@@ -22,8 +22,12 @@ struct OGS_Init_Options
     uint32_t ThreadPoolSize;
 };
 
+typedef void (*OGS_LogCallback)(OGS_ELogLevel, const char*);
+
 /**
  * Initialize Open Game Social. This function should be called before any other OGS function.
  * @param Options Options
  */
 OGS_API void OGS_Init(const OGS_Init_Options* Options);
+
+OGS_API void OGS_SetLogger(OGS_ELogLevel MinLevel, bool bThreadSafe, OGS_LogCallback Callback);

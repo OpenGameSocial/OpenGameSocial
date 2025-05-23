@@ -3,6 +3,7 @@
 #include "Core/Treading/ThreadPool.h"
 
 #include "Core/Http/HttpManager.h"
+#include "Core/Logging/Logger.h"
 
 
 static void OnHttpRequestCompleted(const OGS::Http::CHttpResponse& Resp)
@@ -13,6 +14,12 @@ static void OnHttpRequestCompleted(const OGS::Http::CHttpResponse& Resp)
 
 void OGS_Init(const OGS_Init_Options* Options)
 {
+    OGS::Log(OGS_Verbose, "Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
+    OGS::Log(OGS_Info, "Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
+    OGS::Log(OGS_Warning, "Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
+    OGS::Log(OGS_Error, "Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
+    OGS::Log(OGS_Critical, "Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
+
     const auto Request = OGS::Http::CHttpRequest::CreateRequest();
     Request->SetUrl("http://localhost:5211/WeatherForecast");
     Request->SetMethod(OGS::Http::EHttpMethod::GET);
@@ -20,4 +27,9 @@ void OGS_Init(const OGS_Init_Options* Options)
     Request->Run();
 
     OGS::Threading::CThreadPool::Get().Init(Options->ThreadPoolSize);
+}
+
+void OGS_SetLogger(OGS_ELogLevel MinLevel, bool bThreadSafe, OGS_LogCallback Callback)
+{
+    OGS::CLogger::Get().Init(MinLevel, bThreadSafe, Callback);
 }

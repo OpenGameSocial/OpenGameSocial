@@ -51,12 +51,12 @@ void CThreadPool::Tick()
 {
     std::function<void()> Task;
 
-    while (MainThreadTasks.TryTakeTask(Task))
+    while (MainThreadTasks.TryDequeue(Task))
     {
         Task();
     }
 
-    while (SharedTasks.TryTakeTask(Task))
+    while (SharedTasks.TryDequeue(Task))
     {
         Task();
     }
@@ -66,18 +66,18 @@ void CThreadPool::AddTask(ETaskThread Thread, std::function<void()>&& InTask)
 {
     if (Thread == ETaskThread::MainThread)
     {
-        MainThreadTasks.AddTask(std::move(InTask));
+        MainThreadTasks.Enqueue(std::move(InTask));
         return;
     }
 
     if (Thread == ETaskThread::ThreadPool)
     {
-        PoolTasks.AddTask(std::move(InTask));
+        PoolTasks.Enqueue(std::move(InTask));
         Condition.notify_one();
         return;
     }
 
-    SharedTasks.AddTask(std::move(InTask));
+    SharedTasks.Enqueue(std::move(InTask));
     Condition.notify_one();
 }
 
@@ -93,12 +93,12 @@ void CThreadPool::ThreadRoutine(int32_t ThreadIndex)
             Condition.wait(Lock);
         }
 
-        while (IsRunning && PoolTasks.TryTakeTask(Task))
+        while (IsRunning && PoolTasks.TryDequeue(Task))
         {
             Task();
         }
 
-        while (IsRunning && SharedTasks.TryTakeTask(Task))
+        while (IsRunning && SharedTasks.TryDequeue(Task))
         {
             Task();
         }

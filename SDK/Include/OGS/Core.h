@@ -52,3 +52,12 @@
 #endif
 
 #define CHECK(expr)
+
+enum OGS_ELogLevel
+{
+    OGS_Verbose = 0,
+    OGS_Info = 1,
+    OGS_Warning = 2,
+    OGS_Error = 3,
+    OGS_Critical = 4
+};

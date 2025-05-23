@@ -45,7 +45,7 @@ namespace OGS::Http
     private:
         CHttpRequest();
 
-        void Complete(CHttpResponse Response);
+        void Complete(CHttpResponse&& Response);
 
     private:
         CGuid Guid;

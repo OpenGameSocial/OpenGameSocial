@@ -8,8 +8,15 @@ static void OnLoginWithOpenId(OGS_Result Result, void* UserObject, const OGS_Acc
     // DEBUG_BREAK();
 }
 
+static void DoLogging(OGS_ELogLevel Level, const char* Message)
+{
+    printf("[%i] %s\n", Level, Message);
+}
+
 int main()
 {
+    OGS_SetLogger(OGS_Info, true, DoLogging);
+
     {
         OGS_Init_Options Options{};
         Options.ThreadPoolSize = 4;
