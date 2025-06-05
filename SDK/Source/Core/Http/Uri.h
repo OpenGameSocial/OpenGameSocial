@@ -8,7 +8,7 @@ namespace OGS::Http
     class Uri final
     {
     public:
-        explicit Uri(const std::string& Uri);
+        Uri(const std::string& Uri);
         
         Uri() = default;
 

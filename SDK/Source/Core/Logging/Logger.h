@@ -4,6 +4,7 @@
 
 #include "Core/Common/Containers/NonBlockingQueue.h"
 #include "OpenGameSocial.h"
+#include "Core/Common/StringUtils.h"
 
 
 namespace OGS
@@ -44,37 +45,48 @@ namespace OGS
             while (FrontQueue->TryDequeue(Entry))
             {
                 Callback(Entry.Level, Entry.Message.c_str());
+
+                if (Entry.Level == OGS_Critical)
+                {
+                    DEBUG_BREAK();
+                }
             }
         }
 
-        template <typename... TArgs>
-        void Log(OGS_ELogLevel Level, const char* Format, TArgs... Args)
+        void Log(OGS_ELogLevel Level, std::string& LogString)
         {
             if (!Callback || MinLevel > Level)
             {
                 return;
             }
 
-            auto Size = SNPRINTF(nullptr, 0, Format, std::forward<TArgs>(Args)...);
-
-            if (Size + 1 > Buffer.capacity())
-            {
-                Buffer.reserve(Size + 1);
-            }
-
-            Buffer.resize(Size);
-
-            SNPRINTF(Buffer.data(), Size + 1, Format, std::forward<TArgs>(Args)...);
-
             if (!bThreadSafe)
             {
-                Callback(Level, Buffer.data());
+                Callback(Level, LogString.data());
+
+                if (Level == OGS_Critical)
+                {
+                    DEBUG_BREAK();
+                }
             }
 
             BackQueue->Enqueue({
                 .Level = Level,
-                .Message = Buffer
+                .Message = std::move(LogString)
             });
+        }
+
+        template <typename ... TArgs>
+        void LogFormat(OGS_ELogLevel Level, const char* Format, TArgs&& ... Args)
+        {
+            if (!Callback || MinLevel > Level)
+            {
+                return;
+            }
+
+            auto LogString = Printf(Format, std::forward<TArgs>(Args) ...);
+
+            Log(LogString);
         }
 
     private:
@@ -86,8 +98,6 @@ namespace OGS
         using CLogQueue = TNonBlockingQueue<Details::SLogEntry>;
         using CLogQueuePtr = std::unique_ptr<CLogQueue>;
 
-        static thread_local std::string Buffer;
-
         CLogQueuePtr FrontQueue;
         CLogQueuePtr BackQueue;
 
@@ -96,9 +106,39 @@ namespace OGS
         bool bThreadSafe = false;
     };
 
-    template <typename... TArgs>
-    inline void Log(OGS_ELogLevel Level, const char* Format, TArgs... Args)
-    {
-        CLogger::Get().Log(Level, Format, std::forward<TArgs>(Args)...);
+#define FORWARD_LOG_LEVEL(Level)                                   \
+    template <typename ... TArgs>                                  \
+    void Level(const char* Format, TArgs&& ... Args)               \
+    {                                                              \
+        Log(OGS_##Level, Format, std::forward<TArgs>(Args) ...);   \
     }
+
+    class CLogCategory final
+    {
+    public:
+        explicit CLogCategory(const char* InCategoryName) : CategoryName
+            (InCategoryName)
+        {
+        }
+
+        template <typename ... TArgs>
+        void Log(OGS_ELogLevel Level, const char* Format, TArgs&& ... Args)
+        {
+            auto FormattedString = Printf(Format, std::forward<TArgs>(Args) ...);
+            auto LogString = Printf("%s: [%s] %s", CategoryName, LevelToString(Level), FormattedString.c_str());
+
+            CLogger::Get().Log(Level, LogString);
+        }
+
+        FORWARD_LOG_LEVEL(Verbose)
+        FORWARD_LOG_LEVEL(Info)
+        FORWARD_LOG_LEVEL(Warning)
+        FORWARD_LOG_LEVEL(Error)
+        FORWARD_LOG_LEVEL(Critical)
+
+    private:
+        const char* CategoryName;
+    };
+
+#undef FORWARD_LOG_LEVEL
 }

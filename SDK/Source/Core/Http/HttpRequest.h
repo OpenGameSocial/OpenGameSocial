@@ -23,7 +23,7 @@ namespace OGS::Http
 
         static std::shared_ptr<CHttpRequest> CreateRequest();
 
-        void SetUrl(const std::string& Url);
+        void SetUrl(const Uri& Url);
         void SetMethod(EHttpMethod Method);
 
         void SetHeader(const std::string& Key, const std::string& Value);

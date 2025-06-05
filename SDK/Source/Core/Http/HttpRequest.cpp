@@ -10,7 +10,7 @@ std::shared_ptr<CHttpRequest> CHttpRequest::CreateRequest()
     return std::shared_ptr<CHttpRequest>(new CHttpRequest());
 }
 
-void CHttpRequest::SetUrl(const std::string& Url)
+void CHttpRequest::SetUrl(const Uri& Url)
 {
     PlatformRequest.SetUrl(Url);
 }

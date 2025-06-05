@@ -29,9 +29,9 @@ namespace OGS::Http
 
             ~CMacHttpRequest() = default;
 
-            void SetUrl(const std::string& InUrl)
+            void SetUrl(const Uri& InUrl)
             {
-                Url.Parse(InUrl);
+                Url = InUrl;
             }
 
             void SetMethod(EHttpMethod InMethod);

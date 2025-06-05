@@ -10,12 +10,12 @@ static void OnLoginWithOpenId(OGS_Result Result, void* UserObject, const OGS_Acc
 
 static void DoLogging(OGS_ELogLevel Level, const char* Message)
 {
-    printf("[%i] %s\n", Level, Message);
+    printf("%s\n", Message);
 }
 
 int main()
 {
-    OGS_SetLogger(OGS_Info, true, DoLogging);
+    OGS_SetLogger(OGS_Verbose, true, DoLogging);
 
     {
         OGS_Init_Options Options{};

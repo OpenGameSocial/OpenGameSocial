@@ -51,6 +51,12 @@
     #define SNPRINTF(buffer, size, format, ...) snprintf(buffer, size, format, __VA_ARGS__)
 #endif
 
+#ifdef PLATFORM_WINDOWS
+    #define SCPRINTF(format, ...) _scprintf(format, __VA_ARGS__)
+#else
+    #define SCPRINTF(format, ...) SNPRINTF(nullptr, 0, format, __VA_ARGS__)
+#endif
+
 #define CHECK(expr)
 
 enum OGS_ELogLevel
@@ -61,3 +67,23 @@ enum OGS_ELogLevel
     OGS_Error = 3,
     OGS_Critical = 4
 };
+
+inline const char* LevelToString(OGS_ELogLevel Level)
+{
+    switch (Level)
+    {
+    case OGS_Verbose:
+        return "Verbose";
+    case OGS_Info:
+        return "Info";
+    case OGS_Warning:
+        return "Warning";
+    case OGS_Error:
+        return "Error";
+    case OGS_Critical:
+        return "Critical";
+    }
+
+    DEBUG_BREAK();
+    return "Unknown";
+}

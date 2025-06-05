@@ -6,6 +6,8 @@
 #include "Core/Logging/Logger.h"
 
 
+static OGS::CLogCategory LogOpenGameSocial("LogOpenGameSocial");
+
 static void OnHttpRequestCompleted(const OGS::Http::CHttpResponse& Resp)
 {
     printf("Received http response [%i]:\n", Resp.GetCode());
@@ -14,14 +16,13 @@ static void OnHttpRequestCompleted(const OGS::Http::CHttpResponse& Resp)
 
 void OGS_Init(const OGS_Init_Options* Options)
 {
-    OGS::Log(OGS_Verbose, "Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
-    OGS::Log(OGS_Info, "Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
-    OGS::Log(OGS_Warning, "Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
-    OGS::Log(OGS_Error, "Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
-    OGS::Log(OGS_Critical, "Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
+    LogOpenGameSocial.Verbose("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
+    LogOpenGameSocial.Info("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
+    LogOpenGameSocial.Error("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
+    LogOpenGameSocial.Critical("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
 
     const auto Request = OGS::Http::CHttpRequest::CreateRequest();
-    Request->SetUrl("http://localhost:5211/WeatherForecast");
+    Request->SetUrl(std::string("https://api.ipify.org?format=json"));
     Request->SetMethod(OGS::Http::EHttpMethod::GET);
     Request->SetOnCompleted(OGS::Http::CHttpResponseDelegate::CreateStatic(OnHttpRequestCompleted));
     Request->Run();
