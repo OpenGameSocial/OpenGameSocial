@@ -6,7 +6,7 @@
 #include "Core/Logging/Logger.h"
 
 
-static OGS::CLogCategory LogOpenGameSocial("LogOpenGameSocial");
+static OGS::TLogCategory LogOpenGameSocial("LogOpenGameSocial");
 
 static void OnHttpRequestCompleted(const OGS::Http::CHttpResponse& Resp)
 {
