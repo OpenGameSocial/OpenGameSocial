@@ -24,7 +24,7 @@ namespace OGS
     public:
         static CLogger& Get();
 
-        void Init(OGS_ELogLevel InMinLevel, bool bInThreadSafe, OGS_LogCallback InCallback)
+        void Init(const OGS_ELogLevel InMinLevel, const bool bInThreadSafe, const OGS_LogCallback InCallback)
         {
             MinLevel = InMinLevel;
             Callback = InCallback;
@@ -53,7 +53,7 @@ namespace OGS
             }
         }
 
-        void Log(OGS_ELogLevel Level, std::string& LogString)
+        void Log(const OGS_ELogLevel Level, std::string& LogString) const
         {
             if (!Callback || MinLevel > Level)
             {
@@ -76,15 +76,15 @@ namespace OGS
             });
         }
 
-        template <typename ... TArgs>
-        void LogFormat(OGS_ELogLevel Level, const char* Format, TArgs&& ... Args)
+        template <typename... TArgs>
+        void LogFormat(OGS_ELogLevel Level, const char* Format, TArgs&&... Args)
         {
             if (!Callback || MinLevel > Level)
             {
                 return;
             }
 
-            auto LogString = Printf(Format, std::forward<TArgs>(Args) ...);
+            auto LogString = Printf(Format, std::forward<TArgs>(Args)...);
 
             Log(LogString);
         }
@@ -110,24 +110,28 @@ namespace OGS
     template <typename ... TArgs>                                  \
     void Level(const char* Format, TArgs&& ... Args)               \
     {                                                              \
-        Log(OGS_##Level, Format, std::forward<TArgs>(Args) ...);   \
+        Log<OGS_##Level>(Format, std::forward<TArgs>(Args) ...);   \
     }
 
-    class CLogCategory final
+    template <OGS_ELogLevel MinCompileLevel = OGS_Verbose, OGS_ELogLevel MaxCompileLevel = OGS_Critical>
+    class TLogCategory final
     {
     public:
-        explicit CLogCategory(const char* InCategoryName) : CategoryName
+        explicit TLogCategory(const char* InCategoryName) : CategoryName
             (InCategoryName)
         {
         }
 
-        template <typename ... TArgs>
-        void Log(OGS_ELogLevel Level, const char* Format, TArgs&& ... Args)
+        template <OGS_ELogLevel Level, typename... TArgs>
+        void Log(const char* Format, TArgs&&... Args)
         {
-            auto FormattedString = Printf(Format, std::forward<TArgs>(Args) ...);
-            auto LogString = Printf("%s: [%s] %s", CategoryName, LevelToString(Level), FormattedString.c_str());
+            if constexpr (MinCompileLevel <= Level && MaxCompileLevel >= Level)
+            {
+                auto FormattedString = Printf(Format, std::forward<TArgs>(Args)...);
+                auto LogString = Printf("%s: [%s] %s", CategoryName, LevelToString(Level), FormattedString.c_str());
 
-            CLogger::Get().Log(Level, LogString);
+                CLogger::Get().Log(Level, LogString);
+            }
         }
 
         FORWARD_LOG_LEVEL(Verbose)
