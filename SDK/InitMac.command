@@ -1,1 +1,0 @@
-softwareupdate --install-rosetta

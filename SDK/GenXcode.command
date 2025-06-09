@@ -1,3 +1,0 @@
-rm -rf *.xcodeproj
-rm *.xcworkspacedata
-./Premake5/premake5.mac xcode4

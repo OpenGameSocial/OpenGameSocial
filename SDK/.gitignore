@@ -1,7 +1,6 @@
 .idea/
 .vs/
 Intermediate/
-Build/
 *.xcodeproj/
 *.xcworkspacedata
 *.sln
@@ -11,3 +10,4 @@ Makefile
 *.make
 .luarc.json
 *.vcxproj.filters
+Bin/
