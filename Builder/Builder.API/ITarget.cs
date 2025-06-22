@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using Builder.API.Target;
 
 namespace Builder.API;
@@ -9,17 +10,7 @@ public interface ITarget
 
     TargetType Type { get; }
 
-    string SourcesDir { get; }
-
-    string BaseDir { get; }
-
-    List<string> IncludeDirs { get; }
+    ImmutableList<Type> Dependencies { get; }
 
     void Setup();
-
-    ImmutableHashSet<string> GetCompilationUnits(string currentDirectory);
-
-    ImmutableHashSet<string> GetAdditionalIncludeDirs(string currentDirectory);
-
-    ImmutableHashSet<Type> GetDependencies();
 }

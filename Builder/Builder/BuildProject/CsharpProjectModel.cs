@@ -19,6 +19,15 @@ public class PropertyGroupModel
     
     [XmlElement(ElementName = "AppendTargetFrameworkToOutputPath")]
     public string AppendTargetFrameworkToOutputPath { get; set; } = "false";
+    
+    [XmlElement(ElementName = "DebugType")]
+    public string DebugType { get; set; } = "portable";
+    
+    [XmlElement(ElementName = "DebugSymbols")]
+    public string DebugSymbols { get; set; } = "true";
+    
+    [XmlElement(ElementName = "Optimize")]
+    public string Optimize { get; set; } = "false";
 }
 
 [XmlRoot(ElementName = "Compile")]

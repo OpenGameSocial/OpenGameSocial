@@ -17,6 +17,7 @@ public class BuildProject
 
         var dllPath = Directory.EnumerateFiles(Path.Combine(PathConstants.ProjectsDir, "bin"), "Build.dll",
             SearchOption.AllDirectories).Single();
+        
         var assembly = Assembly.LoadFile(Path.GetFullPath(dllPath));
 
         Project = (IProject)Activator.CreateInstance(assembly.GetTypes()
@@ -76,7 +77,7 @@ public class BuildProject
 
     private void Build()
     {
-        var ret = ProcessRunner.Run("dotnet", out var exitCode, "build", PathConstants.BuildProj);
+        var ret = ProcessRunner.Run("dotnet", out var exitCode, "build", "-c", "Debug", PathConstants.BuildProj);
 
         if (exitCode != 0)
         {

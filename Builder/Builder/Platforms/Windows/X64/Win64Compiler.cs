@@ -11,9 +11,9 @@ public class Win64Compiler : ICompiler
         VisualStudioEnvironment.EnsureInitialized("x64");
     }
 
-    public IImmutableSet<string> Compile(ITarget target, IImmutableSet<string> compilationUnits)
+    public IImmutableSet<string> Compile(string baseDir, IModule module, IImmutableSet<string> compilationUnits)
     {
-        var objectsDir = Path.Combine(PathConstants.ObjectsDir, target.Name);
+        var objectsDir = Path.Combine(PathConstants.ObjectsDir, module.Name);
         Directory.CreateDirectory(objectsDir);
 
         var result = new HashSet<string>();
@@ -30,9 +30,10 @@ public class Win64Compiler : ICompiler
                 "/c", "/EHsc", "/nologo", $"/Fo{objPath}", "/MT", "/std:c++17"
             };
 
-            args.Add($"/I{Path.Combine(target.BaseDir, target.SourcesDir)}");
-            args.AddRange(target.IncludeDirs.Select(x => $"/I{Path.GetFullPath(x.AsTargetPath(target))}"));
-            
+            args.Add($"/I{Path.Combine(baseDir, "Private")}");
+            args.Add($"/I{Path.Combine(baseDir, "Public")}");
+            args.AddRange(module.IncludeDirs.Select(x => $"/I{Path.GetFullPath(Path.Combine(baseDir, x))}"));
+
             args.Add(unit);
 
             var compilationResult = ProcessRunner.RunWithEnv(

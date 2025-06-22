@@ -1,69 +1,23 @@
 ﻿using System.Collections.Immutable;
-using System.Runtime.CompilerServices;
+using Builder.API.Module;
 
 namespace Builder.API.Target;
 
 public abstract class TargetBase<T> : ITarget
+    where T : TargetBase<T>
 {
-    private static readonly string[] CompilationUnitsPatterns = ["*.c", "*.cpp"];
-
     public string Name => typeof(T).Name;
 
     public abstract TargetType Type { get; }
 
-    public abstract string SourcesDir { get; }
-    public abstract string BaseDir { get; }
-
-    public List<string> IncludeDirs { get; } = new();
+    public ImmutableList<Type> Dependencies { get; private set; } = ImmutableList<Type>.Empty;
 
     public virtual void Setup()
     {
     }
-
-    public virtual ImmutableHashSet<string> GetCompilationUnits(string currentDirectory)
-    {
-        return GetFilesWithPattern(currentDirectory, CompilationUnitsPatterns);
-    }
     
-    public virtual ImmutableHashSet<string> GetAdditionalIncludeDirs(string currentDirectory)
+    protected void AddDependency<TDependency>() where TDependency : ModuleBase<TDependency>
     {
-        return [];
-    }
-
-    public virtual ImmutableHashSet<Type> GetDependencies()
-    {
-        return [];
-    }
-
-    private static ImmutableHashSet<string> GetFilesWithPattern(string currentDirectory, string[] patterns)
-    {
-        var result = new HashSet<string>();
-
-        foreach (var pattern in patterns)
-        {
-            result.UnionWith(Directory.EnumerateFiles(currentDirectory, pattern, SearchOption.AllDirectories)
-                .Select(Path.GetFullPath));
-        }
-
-        return result.ToImmutableHashSet();
-    }
-
-    protected static string GetCurrentBaseDirectory([CallerFilePath] string path = null!)
-    {
-        var raw = path.Split(Path.DirectorySeparatorChar);
-        var rootIndex = -1;
-
-        for (var i = raw.Length - 1; i >= 0; i--)
-        {
-            if (raw[i] != "Build")
-            {
-                continue;
-            }
-
-            rootIndex = i;
-            break;
-        }
-
-        return string.Join(Path.DirectorySeparatorChar, raw.Take(rootIndex));
+        Dependencies = Dependencies.Add(typeof(TDependency));
     }
 }

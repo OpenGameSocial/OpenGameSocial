@@ -4,5 +4,5 @@ namespace Builder.API;
 
 public interface ICompiler
 {
-    IImmutableSet<string> Compile(ITarget target, IImmutableSet<string> compilationUnits);
+    IImmutableSet<string> Compile(string baseDir, IModule module, IImmutableSet<string> compilationUnits);
 }

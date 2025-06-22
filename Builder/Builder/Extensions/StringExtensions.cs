@@ -1,11 +1,12 @@
 ﻿using Builder.API;
+using Builder.Modules;
 
 namespace Builder.Extensions;
 
 public static class StringExtensions
 {
-    public static string AsTargetPath(this string path, ITarget target)
+    public static string AsModulePath(this string path, ModuleInfo info)
     {
-        return Path.Combine(target.BaseDir, path);
+        return Path.Combine(info.BaseDir, path);
     }
 }
