@@ -6,6 +6,8 @@ namespace Build;
 
 public class Project : IProject
 {
+	public string Name => "OpenGameSocialSDK";
+	
     public IImmutableList<ITarget> GetTargets()
     {
         return [new IntegrationTestingTool(), new OpenGameSocial()];

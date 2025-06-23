@@ -40,7 +40,7 @@ public class Win64Compiler : ICompiler
                 VisualStudioEnvironment.GetCompiler(),
                 out var exitCode,
                 VisualStudioEnvironment.Environment,
-                args);
+                args.ToArray());
 
             Console.WriteLine(compilationResult);
 

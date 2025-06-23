@@ -4,7 +4,7 @@ namespace Builder.Platforms.Windows.X64;
 
 public class PlatformWin64 : IPlatform
 {
-    public string Name => "Win64";
+    public string Name => "x64";
 
     private readonly ICompiler _compiler = new Win64Compiler();
     private readonly ILinker _linker = new Win64Linker();

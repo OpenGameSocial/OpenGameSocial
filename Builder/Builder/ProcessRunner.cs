@@ -6,13 +6,13 @@ namespace Builder;
 
 public static class ProcessRunner
 {
-    public static string Run(string command, out int exitCode, params IEnumerable<string> args)
+    public static string Run(string command, out int exitCode, params string[] args)
     {
         return RunWithEnv(command, out exitCode, new(), args);
     }
 
     public static string RunWithEnv(string command, out int exitCode, Dictionary<string, string> env,
-        params IEnumerable<string> args)
+        params string[] args)
     {
         using var process = new Process();
         process.StartInfo = new ProcessStartInfo(command, args)

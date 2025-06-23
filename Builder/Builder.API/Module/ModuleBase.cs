@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics;
 
 namespace Builder.API.Module;
 
@@ -13,12 +14,25 @@ public abstract class ModuleBase<T> : IModule
 
     public ImmutableList<Type> Dependencies { get; private set; } = ImmutableList<Type>.Empty;
 
+    public bool HasSetup { get; private set; }
+
     public ModuleBase()
     {
         Name = typeof(T).Name;
     }
 
-    public abstract void Setup();
+    public void Setup()
+    {
+        if (HasSetup)
+        {
+            return;
+        }
+
+        SetupModule();
+        HasSetup = true;
+    }
+
+    protected abstract void SetupModule();
 
     public virtual ImmutableHashSet<string> GetCompilationUnits(string currentDirectory)
     {

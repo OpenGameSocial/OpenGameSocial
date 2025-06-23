@@ -4,7 +4,7 @@ namespace Build;
 
 public class IntegrationTestingToolModule : ModuleBase<IntegrationTestingToolModule>
 {
-    public override void Setup()
+    protected override void SetupModule()
     {
         AddDependency<TestModule>();
     }

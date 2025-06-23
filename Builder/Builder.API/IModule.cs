@@ -10,6 +10,8 @@ public interface IModule
     List<string> IncludeDirs { get; }
 
     ImmutableList<Type> Dependencies { get; }
+    
+    bool HasSetup { get; }
 
     void Setup();
 

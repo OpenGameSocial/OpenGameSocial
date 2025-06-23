@@ -6,7 +6,7 @@ namespace Builder;
 public class PropertyGroupModel
 {
     [XmlElement(ElementName = "TargetFramework")]
-    public string TargetFramework { get; set; } = "net9.0";
+    public string TargetFramework { get; set; } = "net8.0";
 
     [XmlElement(ElementName = "ImplicitUsings")]
     public string ImplicitUsings { get; set; } = "enable";
@@ -34,7 +34,10 @@ public class PropertyGroupModel
 public class CompileModel
 {
     [XmlAttribute(AttributeName = "Include")]
-    public required string Include { get; set; }
+    public string? Include { get; set; }
+    
+    [XmlAttribute(AttributeName = "Remove")]
+    public string? Remove { get; set; }
 }
 
 [XmlRoot(ElementName = "Reference")]

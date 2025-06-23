@@ -57,6 +57,10 @@ public class BuildProject
                     new()
                     {
                         Include = sourcePath
+                    },
+                    new()
+                    {
+                        Remove = "obj/**"
                     }
                 },
                 Reference = new()
@@ -84,7 +88,7 @@ public class BuildProject
             Console.WriteLine("An error occured during build:");
             Console.WriteLine(ret);
 
-            throw new Exception();
+            Environment.Exit(exitCode);
         }
     }
 

@@ -17,6 +17,7 @@
 
 int main()
 {
+    __debugbreak();
 	PrintHello();
     // OGS_SetLogger(OGS_Verbose, true, DoLogging);
 

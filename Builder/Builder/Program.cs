@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Builder.Modules;
 using Builder.Options;
 using Builder.Platforms;
 using Builder.ProjectGenerators;
@@ -32,11 +33,18 @@ internal static class Program
 
         var buildProject = new BuildProject.BuildProject();
         buildProject.LoadProject();
+        
+        var project = BuildProject.BuildProject.Project;
+        ModulesRegistry.Instance.RegisterProject(project);
 
         switch (options)
         {
             case GenerateProjectsVerb generateProjects:
                 ProjectGeneratorsRegistry.Instance.GenerateProjects(generateProjects);
+                break;
+
+            case BuildVerb:
+                Build.Builder.Build();
                 break;
         }
     }
