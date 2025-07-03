@@ -76,10 +76,10 @@ public class VisualStudioGenerator : IProjectGenerator
         globals.Label = "Globals";
         globals.AddProperty("ProjectGuid", $"{{{resultConfig.Guid.ToString().ToUpper()}}}");
         globals.AddProperty("Keyword", "MakeFileProj");
-        globals.AddProperty("MinimumVisualStudioVersion", "17.0");
-        globals.AddProperty("VCProjectVersion", "17.0");
+        globals.AddProperty("MinimumVisualStudioVersion", VisualStudioProjectConstants.MinimumVisualStudioVersion);
+        globals.AddProperty("VCProjectVersion", VisualStudioProjectConstants.ProjectVersion);
         globals.AddProperty("TargetRuntime", "Native");
-        globals.AddProperty("PlatformToolset", "v143");
+        globals.AddProperty("PlatformToolset", VisualStudioProjectConstants.PlatformToolset);
 
         var builderPath = Path.GetFullPath(Path.Combine(PathConstants.FullRoot,
             "../", "Builder", "Builder", "Builder.csproj"));

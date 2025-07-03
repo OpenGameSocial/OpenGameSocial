@@ -1,7 +1,5 @@
-﻿using System.Diagnostics;
-using Builder.Modules;
+﻿using Builder.Modules;
 using Builder.Options;
-using Builder.Platforms;
 using Builder.ProjectGenerators;
 using CommandLine;
 
@@ -11,7 +9,13 @@ internal static class Program
 {
     public static void Main(string[] args)
     {
-        Parser.Default.ParseArguments<GenerateProjectsVerb, BuildVerb>(args)
+        var parser = new Parser(settings =>
+        {
+            settings.IgnoreUnknownArguments = true;
+            settings.HelpWriter = Console.Error;
+        });
+
+        parser.ParseArguments<GenerateProjectsVerb, BuildVerb>(args)
             .WithParsed(PerformVerb);
     }
 
@@ -20,12 +24,6 @@ internal static class Program
         var parsedArgs = (Options.CommandLine)options;
         Options.CommandLine.Instance = parsedArgs;
 
-        if (!PlatformsRegistry.Instance.TryGetPlatform(Options.CommandLine.Instance.Platform, out _))
-        {
-            Console.WriteLine("ERROR: Platform not found");
-            return;
-        }
-
         if (!Directory.Exists(PathConstants.IntermediateDir))
         {
             Directory.CreateDirectory(PathConstants.IntermediateDir);
@@ -33,7 +31,7 @@ internal static class Program
 
         var buildProject = new BuildProject.BuildProject();
         buildProject.LoadProject();
-        
+
         var project = BuildProject.BuildProject.Project;
         ModulesRegistry.Instance.RegisterProject(project);
 
@@ -43,7 +41,8 @@ internal static class Program
                 ProjectGeneratorsRegistry.Instance.GenerateProjects(generateProjects);
                 break;
 
-            case BuildVerb:
+            case BuildVerb build:
+                BuildVerb.Instance = build;
                 Build.Builder.Build();
                 break;
         }

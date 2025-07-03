@@ -12,7 +12,7 @@ public class Builder
     {
         var project = BuildProject.BuildProject.Project;
 
-        if (!PlatformsRegistry.Instance.TryGetPlatform(Options.CommandLine.Instance.Platform, out var platform))
+        if (!PlatformsRegistry.Instance.TryGetPlatform(Options.BuildVerb.Instance.Platform, out var platform))
         {
             Console.WriteLine("ERROR: Platform not found");
             return;
