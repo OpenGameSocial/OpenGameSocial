@@ -11,3 +11,4 @@ Makefile
 .luarc.json
 *.vcxproj.filters
 Bin/
+Build/
