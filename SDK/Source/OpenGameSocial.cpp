@@ -19,7 +19,7 @@ void OGS_Init(const OGS_Init_Options* Options)
     LogOpenGameSocial.Verbose("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
     LogOpenGameSocial.Info("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
     LogOpenGameSocial.Error("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
-    LogOpenGameSocial.Critical("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
+    // LogOpenGameSocial.Critical("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
 
     const auto Request = OGS::Http::CHttpRequest::CreateRequest();
     Request->SetUrl(std::string("https://api.ipify.org?format=json"));
