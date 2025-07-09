@@ -23,14 +23,15 @@ static void DoLogging(OGS_ELogLevel Level, const char* Message)
 }
 
 // Callback для записи полученных данных в std::string
-size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
+size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp)
+{
     auto totalSize = size * nmemb;
     auto* str = static_cast<std::string*>(userp);
     str->append(static_cast<char*>(contents), totalSize);
     return totalSize;
 }
 
-static CURLcode sslctx_function(CURL *curl, void *sslctx, void *userptr)
+static CURLcode sslctx_function(CURL* curl, void* sslctx, void* userptr)
 {
     auto* config = static_cast<mbedtls_ssl_config*>(sslctx);
 
@@ -38,7 +39,8 @@ static CURLcode sslctx_function(CURL *curl, void *sslctx, void *userptr)
     mbedtls_x509_crt_init(ca_chain);
 
     int ret = mbedtls_x509_crt_parse(ca_chain, CRootCertificate::Data, CRootCertificate::Size);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         char errbuf[128];
         mbedtls_strerror(ret, errbuf, sizeof(errbuf));
         fprintf(stderr, "Failed to parse cert: %s\n", errbuf);
@@ -55,30 +57,31 @@ static CURLcode sslctx_function(CURL *curl, void *sslctx, void *userptr)
 static int interrupted = 0;
 
 static int
-callback_ws(struct lws *wsi, enum lws_callback_reasons reason,
-            void *user, void *in, size_t len)
+callback_ws(struct lws* wsi, enum lws_callback_reasons reason,
+            void* user, void* in, size_t len)
 {
-    switch (reason) {
+    switch (reason)
+    {
     case LWS_CALLBACK_CLIENT_ESTABLISHED:
         lwsl_user("Connection established\n");
         // Отправляем первое сообщение
         {
-        const char *msg = "Hello from lws WSS client";
-        unsigned char buf[LWS_PRE + 256];
-        size_t msg_len = strlen(msg);
-        memcpy(&buf[LWS_PRE], msg, msg_len);
-        lws_write(wsi, &buf[LWS_PRE], msg_len, LWS_WRITE_TEXT);
+            const char* msg = "Hello from lws WSS client";
+            unsigned char buf[LWS_PRE + 256];
+            size_t msg_len = strlen(msg);
+            memcpy(&buf[LWS_PRE], msg, msg_len);
+            lws_write(wsi, &buf[LWS_PRE], msg_len, LWS_WRITE_TEXT);
         }
         break;
 
     case LWS_CALLBACK_CLIENT_RECEIVE:
-        printf("Received: %.*s\n", (int)len, (char *)in);
+        printf("Received: %.*s\n", (int)len, (char*)in);
         {
-        const char *msg = "Hello from lws WSS client";
-        unsigned char buf[LWS_PRE + 256];
-        size_t msg_len = strlen(msg);
-        memcpy(&buf[LWS_PRE], msg, msg_len);
-        lws_write(wsi, &buf[LWS_PRE], msg_len, LWS_WRITE_TEXT);
+            const char* msg = "Hello from lws WSS client";
+            unsigned char buf[LWS_PRE + 256];
+            size_t msg_len = strlen(msg);
+            memcpy(&buf[LWS_PRE], msg, msg_len);
+            lws_write(wsi, &buf[LWS_PRE], msg_len, LWS_WRITE_TEXT);
         }
         break;
 
@@ -106,10 +109,11 @@ static const struct lws_protocols protocols[] = {
         0,
         512,
     },
-    { NULL, NULL, 0, 0 } /* terminator */
+    {NULL, NULL, 0, 0} /* terminator */
 };
 
-static void my_lws_logger(int level, const char *line) {
+static void my_lws_logger(int level, const char* line)
+{
     // Можно фильтровать по уровню, либо выводить всё
     fprintf(stderr, "[LWS %d] %s\n", level, line);
 }
@@ -121,14 +125,15 @@ int main()
     // mbedtls_debug_set_threshold(4);
 
     CURL* curl = curl_easy_init();
-    if (!curl) {
+    if (!curl)
+    {
         std::cerr << "Ошибка инициализации libcurl\n";
         return 1;
     }
 
     struct lws_context_creation_info info;
     struct lws_client_connect_info ccinfo;
-    struct lws_context *context;
+    struct lws_context* context;
 
     memset(&info, 0, sizeof(info));
     info.port = CONTEXT_PORT_NO_LISTEN; // клиент, не слушает
@@ -136,7 +141,8 @@ int main()
     info.options = LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT;
 
     context = lws_create_context(&info);
-    if (!context) {
+    if (!context)
+    {
         printf("lws init failed\n");
         return -1;
     }
@@ -151,8 +157,9 @@ int main()
     ccinfo.protocol = protocols[0].name;
     ccinfo.ssl_connection = LCCSCF_USE_SSL | LCCSCF_ALLOW_SELFSIGNED; // SSL + разрешить self-signed (если надо)
 
-    struct lws *wsi = lws_client_connect_via_info(&ccinfo);
-    if (!wsi) {
+    struct lws* wsi = lws_client_connect_via_info(&ccinfo);
+    if (!wsi)
+    {
         printf("Client connect failed\n");
         lws_context_destroy(context);
         return -1;
