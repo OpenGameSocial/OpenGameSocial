@@ -1,6 +1,9 @@
 file(GLOB_RECURSE SDK_SOURCES *.cpp)
 
-file(GLOB_RECURSE PLATFORM_SDK_SOURCES ${CMAKE_SOURCE_DIR}/Platform/${CMAKE_SYSTEM_NAME}/Source/*.cpp)
+set(PLATFORM_SRC ${CMAKE_SOURCE_DIR}/Platform/${CMAKE_SYSTEM_NAME})
+set(PLATFORM_BIN ${CMAKE_BINARY_DIR}/Platform/${CMAKE_SYSTEM_NAME})
+
+file(GLOB_RECURSE PLATFORM_SDK_SOURCES ${PLATFORM_SRC}/Source/*.cpp)
 list(APPEND SDK_SOURCES ${PLATFORM_SDK_SOURCES})
 
 if (OGS_BUILD_SHARED)
@@ -9,12 +12,18 @@ else ()
     set(SDK_TYPE STATIC)
 endif ()
 
+set(PLATFORM_CONFIG "${PLATFORM_SRC}/Config.cmake")
+
+if (EXISTS "${PLATFORM_CONFIG}")
+    include("${PLATFORM_CONFIG}")
+endif ()
+
 add_library(SDK ${SDK_TYPE} ${SDK_SOURCES})
 
 # Platform
 add_subdirectory(
-        ${CMAKE_SOURCE_DIR}/Platform/${CMAKE_SYSTEM_NAME}
-        ${CMAKE_BINARY_DIR}/Platform/${CMAKE_SYSTEM_NAME}
+        ${PLATFORM_SRC}
+        ${PLATFORM_BIN}
 )
 
 # Vendor
@@ -30,7 +39,7 @@ endif ()
 target_compile_definitions(SDK PRIVATE OGS_EXPORTS)
 
 target_include_directories(SDK PUBLIC ${CMAKE_SOURCE_DIR}/Include)
-target_include_directories(SDK PRIVATE ${CMAKE_SOURCE_DIR}/Platform/${CMAKE_SYSTEM_NAME}/Source)
+target_include_directories(SDK PRIVATE ${PLATFORM_SRC}/Source)
 target_include_directories(SDK PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 set_target_properties(SDK PROPERTIES
