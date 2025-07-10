@@ -20,7 +20,7 @@ void OGS_Init(const OGS_Init_Options* Options)
 {
     auto& Services = OGS::Services::CServiceContainer::Get();
     Services.RegisterService<OGS::Services::Accounts::CAccountService>();
-    const auto& Accounts = Services.GetService<OGS::Services::Accounts::CAccountService>();
+    Services.RegisterService<OGS::Services::Accounts::CTestService>();
 
     LogOpenGameSocial.Verbose("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
     LogOpenGameSocial.Info("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
@@ -34,6 +34,9 @@ void OGS_Init(const OGS_Init_Options* Options)
     Request->Run();
 
     OGS::Threading::CThreadPool::Get().Init(Options->ThreadPoolSize);
+    OGS::Services::CServiceContainer::Get().Init();
+
+    const auto& Accounts = Services.GetService<OGS::Services::Accounts::CAccountService>();
 }
 
 void OGS_SetLogger(OGS_ELogLevel MinLevel, bool bThreadSafe, OGS_LogCallback Callback)

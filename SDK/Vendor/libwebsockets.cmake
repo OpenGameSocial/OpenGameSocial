@@ -34,19 +34,19 @@ endif ()
 FetchContent_MakeAvailable(libwebsockets)
 
 if (NOT APPLE)
-    target_compile_definitions(websockets PUBLIC LWS_HAVE_MBEDTLS_AUTH_KEY_ID)
-    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_conf_alpn_protocols)
-    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_get_alpn_protocol)
-    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_conf_sni)
-    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_set_hs_ca_chain)
-    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_set_hs_own_cert)
-    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_set_hs_authmode)
-    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_net_init)
-    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_x509_crt_parse_file) # some embedded may lack filesystem
-    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_md_setup) # not on xenial 2.2
-    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_rsa_complete) # not on xenial 2.2
-    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_internal_aes_encrypt)
-    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_set_verify)
+#    target_compile_definitions(websockets PUBLIC LWS_HAVE_MBEDTLS_AUTH_KEY_ID)
+#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_conf_alpn_protocols)
+#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_get_alpn_protocol)
+#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_conf_sni)
+#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_set_hs_ca_chain)
+#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_set_hs_own_cert)
+#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_set_hs_authmode)
+#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_net_init)
+#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_x509_crt_parse_file) # some embedded may lack filesystem
+#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_md_setup) # not on xenial 2.2
+#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_rsa_complete) # not on xenial 2.2
+#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_internal_aes_encrypt)
+#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_set_verify)
 endif ()
 
 set_property(TARGET websockets PROPERTY INTERFACE_INCLUDE_DIRECTORIES "")
