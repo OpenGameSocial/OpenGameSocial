@@ -4,9 +4,9 @@ set(OLD_BUILD_STATIC_LIBS ${BUILD_STATIC_LIBS})
 set(BUILD_SHARED_LIBS OFF)
 set(BUILD_STATIC_LIBS ON)
 
-include(mbedtls.cmake)
-include(libcurl.cmake)
-include(libwebsockets.cmake)
+foreach (LIBRARY IN LISTS OGS_LIBS)
+    include("${LIBRARY}.cmake")
+endforeach ()
 
 set(BUILD_SHARED_LIBS ${OLD_BUILD_SHARED_LIBS})
 set(BUILD_STATIC_LIBS ${OLD_BUILD_STATIC_LIBS})

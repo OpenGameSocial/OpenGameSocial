@@ -17,7 +17,7 @@ namespace OGS::Threading
     };
 
     static constexpr int32_t MainThreadIndex = -2;
-    static constexpr int32_t UnknownThreadIndex = -2;
+    static constexpr int32_t UnknownThreadIndex = -1;
 
     class CThreadPool final
     {

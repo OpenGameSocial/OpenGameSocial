@@ -1,0 +1,1 @@
+set(OGS_LIBS ${OGS_LIBS} libcurl PARENT_SCOPE)

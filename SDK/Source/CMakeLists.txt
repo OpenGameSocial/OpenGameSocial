@@ -20,6 +20,10 @@ endif ()
 
 add_library(SDK ${SDK_TYPE} ${SDK_SOURCES})
 
+set(OGS_LIBS
+        mbedtls
+        libwebsockets)
+
 # Platform
 add_subdirectory(
         ${PLATFORM_SRC}

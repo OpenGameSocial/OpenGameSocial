@@ -4,6 +4,8 @@
 
 #include "Core/Http/HttpManager.h"
 #include "Core/Logging/Logger.h"
+#include "Services/ServiceContainer.h"
+#include "Services/Accounts/AccountService.h"
 
 
 static OGS::TLogCategory LogOpenGameSocial("LogOpenGameSocial");
@@ -16,13 +18,17 @@ static void OnHttpRequestCompleted(const OGS::Http::CHttpResponse& Resp)
 
 void OGS_Init(const OGS_Init_Options* Options)
 {
+    auto& Services = OGS::Services::CServiceContainer::Get();
+    Services.RegisterService<OGS::Services::Accounts::CAccountService>();
+    const auto& Accounts = Services.GetService<OGS::Services::Accounts::CAccountService>();
+
     LogOpenGameSocial.Verbose("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
     LogOpenGameSocial.Info("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
     LogOpenGameSocial.Error("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
     // LogOpenGameSocial.Critical("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
 
     const auto Request = OGS::Http::CHttpRequest::CreateRequest();
-    Request->SetUrl(std::string("https://api.ipify.org?format=json"));
+    Request->SetUrl(std::string("http://localhost:5211/WeatherForecast"));
     Request->SetMethod(OGS::Http::EHttpMethod::GET);
     Request->SetOnCompleted(OGS::Http::CHttpResponseDelegate::CreateStatic(OnHttpRequestCompleted));
     Request->Run();

@@ -7,7 +7,8 @@ OGS::CGuid::CGuid()
 {
     std::random_device Device;
     std::mt19937 Generator(Device());
-    std::uniform_int_distribution<uint32_t> Distribution(0, 0xFFFFFFFF);
+    std::uniform_int_distribution Distribution(std::numeric_limits<uint32_t>::min(),
+                                               std::numeric_limits<uint32_t>::max());
 
     auto* Data32 = reinterpret_cast<uint32_t*>(Data.data());
 
