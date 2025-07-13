@@ -17,7 +17,7 @@ namespace OGS
     using TypeId = uint32_t;
 
     template <typename>
-    constexpr TypeId GetTypeId()
+    static inline TypeId GetTypeId()
     {
         static constexpr TypeId Result = JoaatHash(FUNCTION_SIGNATURE);
         return Result;

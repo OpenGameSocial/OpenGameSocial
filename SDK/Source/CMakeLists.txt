@@ -38,7 +38,9 @@ add_dependencies(SDK GenerateSources)
 
 set(OGS_LIBS
         mbedtls
-        libwebsockets)
+        libwebsockets
+        nlohmannjson
+)
 
 # Platform
 add_subdirectory(
