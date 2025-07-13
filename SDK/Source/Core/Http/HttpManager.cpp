@@ -1,6 +1,6 @@
 #include "HttpManager.h"
 
-#include "Core/Treading/ThreadPool.h"
+#include "Core/Threading/ThreadPool.h"
 
 
 OGS::Http::CHttpManager& OGS::Http::CHttpManager::Get()

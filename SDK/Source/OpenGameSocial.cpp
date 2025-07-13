@@ -1,7 +1,7 @@
 #include "OpenGameSocial.h"
 
 #include "WeatherModels.h"
-#include "Core/Treading/ThreadPool.h"
+#include "Core/Threading/ThreadPool.h"
 
 #include "Core/Http/HttpManager.h"
 #include "Core/Logging/Logger.h"

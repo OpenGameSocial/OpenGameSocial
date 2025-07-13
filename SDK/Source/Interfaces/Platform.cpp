@@ -1,6 +1,6 @@
 #include "OpenGameSocial.h"
 #include "Core/Logging/Logger.h"
-#include "Core/Treading/ThreadPool.h"
+#include "Core/Threading/ThreadPool.h"
 
 
 void OGS_Platform_Tick(double ElapsedSeconds)
