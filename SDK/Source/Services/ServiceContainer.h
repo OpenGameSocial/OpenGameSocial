@@ -10,7 +10,7 @@
 #include "Services/ServiceTraits.h"
 
 #define SERVICE_REGISTER(serviceTypeName) \
-    new OGS::Services::CServiceInitializer<##serviceTypeName>()
+    new OGS::Services::CServiceInitializer<serviceTypeName>()
 
 namespace OGS::Services
 {
