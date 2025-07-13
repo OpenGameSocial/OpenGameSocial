@@ -33,10 +33,11 @@ void OGS_Init(const OGS_Init_Options* Options)
     Request->SetOnCompleted(OGS::Http::CHttpResponseDelegate::CreateStatic(OnHttpRequestCompleted));
     Request->Run();
 
+    CAutoInitRegistry Init;
+    Init.RunInit();
+
     OGS::Threading::CThreadPool::Get().Init(Options->ThreadPoolSize);
     OGS::Services::CServiceContainer::Get().Init();
-
-    const auto& Accounts = Services.GetService<OGS::Services::Accounts::CAccountService>();
 }
 
 void OGS_SetLogger(OGS_ELogLevel MinLevel, bool bThreadSafe, OGS_LogCallback Callback)

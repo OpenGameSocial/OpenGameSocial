@@ -1,12 +1,16 @@
 #pragma once
 
+
 #include <functional>
 #include <memory>
 #include <unordered_map>
 
+#include "Core/Common/Codegen.h"
 #include "Core/Common/TypeUtils.h"
 #include "Services/ServiceTraits.h"
 
+#define SERVICE_REGISTER(serviceTypeName) \
+    new OGS::Services::CServiceInitializer<##serviceTypeName>()
 
 namespace OGS::Services
 {
@@ -113,5 +117,15 @@ namespace OGS::Services
 
     private:
         std::unordered_map<TypeId, SRegisteredService> ServiceMap;
+    };
+
+    template <typename TService>
+    class CServiceInitializer final : public CAutoInitable
+    {
+    public:
+        void Run() override
+        {
+            CServiceContainer::Get().RegisterService<TService>();
+        }
     };
 }

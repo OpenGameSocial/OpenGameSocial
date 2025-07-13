@@ -1,10 +1,12 @@
 file(GLOB_RECURSE SDK_SOURCES *.cpp)
+file(GLOB_RECURSE GENERATED_SOURCE ${CMAKE_BINARY_DIR}/Generated/*.cpp)
 
 set(PLATFORM_SRC ${CMAKE_SOURCE_DIR}/Platform/${CMAKE_SYSTEM_NAME})
 set(PLATFORM_BIN ${CMAKE_BINARY_DIR}/Platform/${CMAKE_SYSTEM_NAME})
 
 file(GLOB_RECURSE PLATFORM_SDK_SOURCES ${PLATFORM_SRC}/Source/*.cpp)
 list(APPEND SDK_SOURCES ${PLATFORM_SDK_SOURCES})
+list(APPEND SDK_SOURCES ${GENERATED_SOURCE})
 
 if (OGS_BUILD_SHARED)
     set(SDK_TYPE SHARED)
@@ -18,7 +20,21 @@ if (EXISTS "${PLATFORM_CONFIG}")
     include("${PLATFORM_CONFIG}")
 endif ()
 
+set(STAMP_FILE "${CMAKE_BINARY_DIR}/codegen.stamp")
+
+add_custom_command(
+        OUTPUT "${STAMP_FILE}" ${GENERATED_SOURCE}
+        COMMAND dotnet run --project ${CODEGEN_TOOL_PROJECT} -- ${CMAKE_SOURCE_DIR} ${CMAKE_SYSTEM_NAME} "${CMAKE_BINARY_DIR}/Generated"
+        COMMENT "Re-generating sources"
+)
+
+add_custom_target(
+        GenerateSources
+        DEPENDS "${STAMP_FILE}"
+)
+
 add_library(SDK ${SDK_TYPE} ${SDK_SOURCES})
+add_dependencies(SDK GenerateSources)
 
 set(OGS_LIBS
         mbedtls

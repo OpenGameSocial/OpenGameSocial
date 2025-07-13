@@ -1,10 +1,16 @@
 #include "AccountService.h"
 #include "TestService.h"
 
-void OGS::Services::Accounts::CAccountService::Init()
+
+namespace OGS::Services::Accounts
 {
-    TestService->PrintHello();
+    void CAccountService::Init()
+    {
+        TestService->PrintHello();
+    }
+
+    void CAccountService::DeInit()
+    {}
 }
 
-void OGS::Services::Accounts::CAccountService::DeInit()
-{}
+CAutoInit AccountServiceInit(SERVICE_REGISTER(OGS::Services::Accounts::CAccountService));
