@@ -1,11 +1,24 @@
 #pragma once
 
-
-#include <memory>
+#include <optional>
 #include <vector>
 
-// Mark field as serializable
+
+// Mark class/struct member as serializable
 #define SERIALIZABLE()
+
+#define SERIALIZE_METHODS(type)                                      \
+    friend void to_json(nlohmann::json& output, const type& input);  \
+    friend void from_json(const nlohmann::json& input, type& output);
+
+template <typename T>
+struct TFieldRealType;
+
+template <typename T>
+struct TFieldRealType<std::optional<T>>
+{
+    using Type = T;
+};
 
 class CAutoInitable
 {
@@ -54,7 +67,7 @@ public:
 private:
     void Register(CAutoInit* Initializer)
     {
-        Initializers.push_back(std::unique_ptr<CAutoInit>(Initializer));
+        Initializers.push_back(Initializer);
     }
 
     // Generated
@@ -62,5 +75,5 @@ private:
 
 private:
     bool bInitialized = false;
-    std::vector<std::unique_ptr<CAutoInit>> Initializers;
+    std::vector<CAutoInit*> Initializers;
 };

@@ -7,12 +7,48 @@
 #include "Services/ServiceContainer.h"
 #include "Services/Accounts/AccountService.h"
 
+#include <nlohmann/json.hpp>
+
+#include "Services/Accounts/TestSerialization.h"
+
 
 static OGS::TLogCategory LogOpenGameSocial("LogOpenGameSocial");
+
+// void to_json(nlohmann::json& nlohmann_json_j, const SWeatherForecast& nlohmann_json_t)
+// {
+//     nlohmann_json_j["date"] = nlohmann_json_t.Date;
+//     nlohmann_json_j["temperatureC"] = nlohmann_json_t.TemperatureC;
+//     nlohmann_json_j["temperatureF"] = nlohmann_json_t.TemperatureF;
+// }
+//
+// void from_json(const nlohmann::json& nlohmann_json_j, SWeatherForecast& nlohmann_json_t)
+// {
+//     nlohmann_json_j.at("date").get_to(nlohmann_json_t.Date);
+//     nlohmann_json_j.at("temperatureC").get_to(nlohmann_json_t.TemperatureC);
+//     nlohmann_json_j.at("temperatureF").get_to(nlohmann_json_t.TemperatureF);
+// };
+//
+// void from_json(const nlohmann::json& input, ::SWeatherForecast& output)
+// {
+//     input.at("date").get_to(output.Date);
+//     input.at("temperaturec").get_to(output.TemperatureC);
+//     input.at("temperaturef").get_to(output.TemperatureF);
+//
+//     auto it = input.find("summary");
+//     if (it != input.end())
+//     {
+//         using TestType = TFieldRealType<decltype(output.Summary)>::Type;
+//         output.Summary = it->template get<TestType>();
+//         // input.at("summary").get_to(output.Summary);
+//     }
+//     // input.at("summary").get_to(output.Summary);
+// }
 
 static void OnHttpRequestCompleted(const OGS::Http::CHttpResponse& Resp)
 {
     printf("Received http response [%i]:\n", Resp.GetCode());
+    auto j = nlohmann::json::parse(Resp.GetResult());
+    std::vector<SWeatherForecast> Weather = j;
     printf("%s\n", Resp.GetResult().c_str());
 }
 

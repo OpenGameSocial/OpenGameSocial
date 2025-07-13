@@ -20,22 +20,52 @@ public class MacroHandlingManager
         }
     }
 
-    public void ProcessFile(string filePath)
+    public void ProcessFile(string root, string filePath)
     {
         var lines = File.ReadAllLines(filePath);
+        ParsingContext context = new()
+        {
+            SourceRoot = root,
+            File = filePath,
+            Lines = lines,
+            Scope = new Stack<string>()
+        };
 
         for (var i = 0; i < lines.Length; i++)
         {
             var line = lines[i];
+            var trimmed = line.Trim();
+
+            if (trimmed.StartsWith("//"))
+            {
+                continue;
+            }
+            
+            context.Index = i;
+
+            if (trimmed.StartsWith('{') && (trimmed.EndsWith('}') || trimmed.EndsWith("};")))
+            {
+                continue;
+            }
+
+            if (trimmed.StartsWith('{'))
+            {
+                context.Scope.Push(lines[i - 1].Trim());
+            }
+
+            if (trimmed.EndsWith('}'))
+            {
+                context.Scope.Pop();
+            }
 
             foreach (var handler in _handlers.Values)
             {
-                if (!handler.CanHandle(line))
+                if (!handler.CanHandle(ref context))
                 {
                     continue;
                 }
 
-                handler.Handle(lines, i);
+                handler.Handle(ref context);
                 break;
             }
         }

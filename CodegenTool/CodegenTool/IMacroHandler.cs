@@ -4,9 +4,9 @@ public interface IMacroHandler
 {
     string Macro { get; }
 
-    bool CanHandle(string line);
+    bool CanHandle(ref ParsingContext context);
 
-    void Handle(string[] lines, int index);
+    void Handle(ref ParsingContext context);
 
     void Flush();
 }

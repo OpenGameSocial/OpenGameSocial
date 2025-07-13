@@ -10,18 +10,19 @@ public class AutoInitHandler : IMacroHandler
 
     private readonly List<string> _initializers = new();
 
-    public bool CanHandle(string line)
+    public bool CanHandle(ref ParsingContext context)
     {
-        return line.Trim().StartsWith(MacroNames.AutoInitMacro, StringComparison.InvariantCulture);
+        return context.File.EndsWith(".cpp") &&
+               context.CurrentLine.StartsWith(Macro, StringComparison.InvariantCulture);
     }
 
-    public void Handle(string[] lines, int index)
+    public void Handle(ref ParsingContext context)
     {
-        var match = InitializerRegex.Match(lines[index]);
+        var match = InitializerRegex.Match(context.CurrentLine);
 
         if (!match.Success)
         {
-            Console.WriteLine($"[WARNING] Cannot match AUTOINIT expression: {lines[index]}");
+            Console.WriteLine($"[WARNING] Cannot match AUTOINIT expression: {context.CurrentLine}");
             return;
         }
 
@@ -41,7 +42,7 @@ public class AutoInitHandler : IMacroHandler
         {
             file.AppendLine($"extern CAutoInit {initializer};");
         }
-        
+
         file.AppendLine();
 
         file.AppendLine("void CAutoInitRegistry::RegisterInitializers()");
