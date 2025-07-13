@@ -45,12 +45,12 @@ public class AutoInitHandler : IMacroHandler
 
         file.AppendLine();
 
-        file.AppendLine("void CAutoInitRegistry::RegisterInitializers()");
+        file.AppendLine("void RunAutoInit()");
         file.AppendLine("{");
 
         foreach (var initializer in _initializers)
         {
-            file.AppendLine($"\tRegister(&{initializer});");
+            file.AppendLine($"\t{initializer}.Run();");
         }
 
         file.AppendLine("}");

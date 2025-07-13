@@ -10,3 +10,8 @@ public class WeatherForecast
 
     public string? Summary { get; set; }
 }
+
+public class WeatherRequestModel
+{
+    public int Count { get; set; }
+}

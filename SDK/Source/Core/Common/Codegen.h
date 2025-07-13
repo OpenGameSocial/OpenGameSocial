@@ -3,6 +3,8 @@
 #include <optional>
 #include <vector>
 
+#include <nlohmann/json.hpp>
+
 
 // Mark class/struct member as serializable
 #define SERIALIZABLE()
@@ -44,36 +46,4 @@ private:
     CAutoInitable* Initable = nullptr;
 };
 
-class CAutoInitRegistry
-{
-public:
-    void RunInit()
-    {
-        if (bInitialized)
-        {
-            return;
-        }
-
-        RegisterInitializers();
-
-        bInitialized = true;
-
-        for (const auto& Init : Initializers)
-        {
-            Init->Run();
-        }
-    }
-
-private:
-    void Register(CAutoInit* Initializer)
-    {
-        Initializers.push_back(Initializer);
-    }
-
-    // Generated
-    void RegisterInitializers();
-
-private:
-    bool bInitialized = false;
-    std::vector<CAutoInit*> Initializers;
-};
+void RunAutoInit();

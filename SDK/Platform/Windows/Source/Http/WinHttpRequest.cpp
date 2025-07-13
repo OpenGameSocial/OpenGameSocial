@@ -115,7 +115,7 @@ namespace OGS::Http::Win64
         }
 
         if (!WinHttpSendRequest(RequestHandle, nullptr, 0,
-            nullptr, 0, 0, reinterpret_cast<DWORD_PTR>(this)))
+            Body.data(), Body.size(), Body.size(), reinterpret_cast<DWORD_PTR>(this)))
         {
             // TODO: logme
             return false;
