@@ -22,7 +22,9 @@ add_library(SDK ${SDK_TYPE} ${SDK_SOURCES})
 
 set(OGS_LIBS
         mbedtls
-        libwebsockets)
+        libwebsockets
+        nlohmannjson
+)
 
 # Platform
 add_subdirectory(
