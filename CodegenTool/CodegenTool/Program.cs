@@ -4,7 +4,7 @@ internal static class Program
 {
     public static void Main(string[] args)
     {
-        Console.WriteLine("Codegen started!");
+        Console.WriteLine("[INFO] Codegen started!");
 
         var root = args[0];
         var sourceDir = args[1];
@@ -32,7 +32,7 @@ internal static class Program
 
         MacroHandlingManager.Instance.Flush(outputDir);
 
-        Console.WriteLine("Codegen finished!");
+        Console.WriteLine("[INFO] Codegen finished!");
     }
 
     private static IEnumerable<string> CollectSources(string path, string pattern, IEnumerable<string> unionWith)

@@ -34,7 +34,7 @@ namespace OGS::Dispatcher
             return Message;
         }
 
-    private:
+    protected:
         COperationResult(int32_t InCode, const std::string& InMessage) :
         Code(InCode),
         Message(InMessage)

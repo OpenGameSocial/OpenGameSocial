@@ -13,6 +13,12 @@ static OGS::TLogCategory LogOpenGameSocial("LogOpenGameSocial");
 static void OnHttpRequestCompleted(const OGS::Http::CHttpResponse& Resp)
 {
     printf("Received http response [%i]:\n", Resp.GetCode());
+
+    if (Resp.GetCode() <= 0)
+    {
+        return;
+    }
+
     std::vector<WeatherResponse> Weather = nlohmann::json::parse(Resp.GetResult());
     printf("Today's weather:\n");
 
