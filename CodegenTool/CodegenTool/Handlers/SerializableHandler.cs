@@ -15,8 +15,18 @@ public class SerializableHandler : IMacroHandler
 
     public bool CanHandle(ref ParsingContext context)
     {
-        return context.File.EndsWith(".h") &&
-               context.CurrentLine.StartsWith(Macro, StringComparison.InvariantCulture);
+        var hasMacro = context.CurrentLine.StartsWith(Macro, StringComparison.InvariantCulture);
+        var isHeader = context.File.EndsWith(".h");
+
+        if (hasMacro && !isHeader)
+        {
+            Console.WriteLine(
+                $"[WARNING] Macro {Macro} is found in non-header file: {context.File}:{context.LineNumber}");
+            Console.WriteLine(context.CurrentLine);
+            return false;
+        }
+
+        return hasMacro && isHeader;
     }
 
     public void Handle(ref ParsingContext context)
@@ -59,6 +69,9 @@ public class SerializableHandler : IMacroHandler
         {
             GenerateJsonOperations(file, descriptor);
         }
+
+        var totalFields = _types.Values.Sum(x => x.Fields.Count);
+        Console.WriteLine($"[INFO] Generated serialization for {totalFields} field(s) in {_types.Count} type(s)");
     }
 
     private static void GenerateJsonOperations(StringBuilder output, SerializableTypeDescriptor descriptor)
@@ -82,7 +95,7 @@ public class SerializableHandler : IMacroHandler
         {
             if (field.Type.Contains("optional<"))
             {
-                var realType = $"TFieldRealType<decltype(output.{field.Name})>::Type";
+                var realType = $"TRealType<decltype(output.{field.Name})>::Type";
 
                 output.AppendLine($"\tauto iterator{field.Name} = input.find(\"{field.SerializableName}\");");
                 output.AppendLine($"\tif (iterator{field.Name} != input.end() && !iterator{field.Name}->is_null())");
