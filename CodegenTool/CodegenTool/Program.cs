@@ -1,9 +1,14 @@
-﻿namespace CodegenTool;
+﻿using System.Diagnostics;
+
+namespace CodegenTool;
 
 internal static class Program
 {
     public static void Main(string[] args)
     {
+        var sw = new Stopwatch();
+        sw.Start();
+        
         Console.WriteLine("[INFO] Codegen started!");
 
         var root = args[0];
@@ -32,6 +37,8 @@ internal static class Program
 
         MacroHandlingManager.Instance.Flush(outputDir);
 
+        sw.Stop();
+        Console.WriteLine($"[INFO] Codegen took {sw.ElapsedMilliseconds}ms.");
         Console.WriteLine("[INFO] Codegen finished!");
     }
 
