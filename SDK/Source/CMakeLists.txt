@@ -24,7 +24,7 @@ set(STAMP_FILE "${CMAKE_BINARY_DIR}/codegen.stamp")
 
 add_custom_command(
         OUTPUT "${STAMP_FILE}" ${GENERATED_SOURCE}
-        COMMAND dotnet run --no-build --no-restore --project ${CODEGEN_TOOL_PROJECT} -- ${CMAKE_SOURCE_DIR} "Source" ${CMAKE_SYSTEM_NAME} "${CMAKE_BINARY_DIR}/Generated"
+        COMMAND dotnet run --configuration Release --no-build --no-restore --project ${CODEGEN_TOOL_PROJECT} -- ${CMAKE_SOURCE_DIR} "Source" ${CMAKE_SYSTEM_NAME} "${CMAKE_BINARY_DIR}/Generated"
         COMMENT "Re-generating sources"
 )
 

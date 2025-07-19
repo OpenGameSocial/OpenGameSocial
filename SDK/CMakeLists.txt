@@ -16,7 +16,7 @@ get_filename_component(CODEGEN_TOOL_PROJECT
         ABSOLUTE)
 
 execute_process(
-        COMMAND dotnet run --project ${CODEGEN_TOOL_PROJECT} -- ${CMAKE_SOURCE_DIR} "Source" ${CMAKE_SYSTEM_NAME} "${CMAKE_BINARY_DIR}/Generated"
+        COMMAND dotnet run --configuration Release --project ${CODEGEN_TOOL_PROJECT} -- ${CMAKE_SOURCE_DIR} "Source" ${CMAKE_SYSTEM_NAME} "${CMAKE_BINARY_DIR}/Generated"
         RESULT_VARIABLE GEN_RESULT
 )
 
