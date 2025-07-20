@@ -6,15 +6,15 @@
 
 namespace OGS
 {
-    template <typename ... TArgs>
+    template <typename... TArgs>
     class TDelegate
     {
     public:
         TDelegate() = default;
 
-        bool Execute(TArgs ... args)
+        bool Execute(TArgs... args)
         {
-            return IsBound() && Callable(std::forward<TArgs>(args) ...);
+            return IsBound() && Callable(std::forward<TArgs>(args)...);
         }
 
         [[nodiscard]] bool IsBound() const
@@ -22,72 +22,101 @@ namespace OGS
             return static_cast<bool>(Callable);
         }
 
-        static TDelegate CreateStatic(void (*InCallable)(TArgs ...))
+        static TDelegate CreateStatic(void (*InCallable)(TArgs...))
         {
-            return TDelegate([InCallable](TArgs ... Args)
+            TDelegate Result;
+
+            Result.BindStatic(InCallable);
+
+            return Result;
+        }
+
+        void BindStatic(void (*InCallable)(TArgs...))
+        {
+            Callable = [InCallable](TArgs... Args)
             {
-                InCallable(std::forward<TArgs>(Args) ...);
+                InCallable(std::forward<TArgs>(Args)...);
                 return true;
-            });
+            };
         }
 
         template <typename TCallable>
         static TDelegate CreateStaticLambda(TCallable&& InCallable)
         {
-            return TDelegate([InCallable = std::forward<TCallable>(InCallable)](TArgs ... Args)
+            TDelegate Result;
+
+            Result.BindStaticLambda(std::forward<TCallable>(InCallable));
+
+            return Result;
+        }
+
+        template <typename TCallable>
+        void BindStaticLambda(TCallable&& InCallable)
+        {
+            Callable = [InCallable = std::forward<TCallable>(InCallable)](TArgs... Args)
             {
-                InCallable(std::forward<TArgs>(Args) ...);
+                InCallable(std::forward<TArgs>(Args)...);
                 return true;
-            });
+            };
         }
 
         template <typename TOwner>
-        static TDelegate CreateShared(const std::shared_ptr<TOwner>& Owner, void (TOwner::*InMethod)(TArgs ...))
+        static TDelegate CreateShared(const std::shared_ptr<TOwner>& Owner, void (TOwner::*InMethod)(TArgs...))
+        {
+            TDelegate Result;
+
+            Result.BindShared(Owner, InMethod);
+
+            return Result;
+        }
+
+        template <typename TOwner>
+        void BindShared(std::shared_ptr<TOwner> Owner, void (TOwner::*InMethod)(TArgs...))
         {
             std::weak_ptr<TOwner> WeakOwner = std::weak_ptr<TOwner>(Owner);
 
-            auto Callable = [WeakOwner, InMethod](TArgs ... Args)
+            Callable = [WeakOwner, InMethod](TArgs... Args)
             {
                 if (std::shared_ptr<TOwner> OwnerPtr = WeakOwner.lock())
                 {
-                    (OwnerPtr.get()->*InMethod)(std::forward<TArgs>(Args) ...);
+                    (OwnerPtr.get()->*InMethod)(std::forward<TArgs>(Args)...);
                     return true;
                 }
 
                 return false;
             };
-
-            return TDelegate(Callable);
         }
 
         template <typename TOwner, typename TCallable>
         static TDelegate CreateSharedLambda(const std::shared_ptr<TOwner>& Owner, TCallable&& InCallable)
         {
+            TDelegate Result;
+
+            Result.BindSharedLambda(Owner, std::forward<TCallable>(InCallable));
+
+            return Result;
+        }
+
+        template <typename TOwner, typename TCallable>
+        void BindSharedLambda(const std::shared_ptr<TOwner>& Owner, TCallable&& InCallable)
+        {
             std::weak_ptr<TOwner> WeakOwner = std::weak_ptr<TOwner>(Owner);
 
-            auto Callable = [WeakOwner, InCallable = std::forward<TCallable>(InCallable)](TArgs ... Args)
+            Callable = [WeakOwner, InCallable = std::forward<TCallable>(InCallable)](TArgs... Args)
             {
                 if (std::shared_ptr<TOwner> _ = WeakOwner.lock())
                 {
-                    InCallable(std::forward<TArgs>(Args) ...);
+                    InCallable(std::forward<TArgs>(Args)...);
                     return true;
                 }
 
                 return false;
             };
-
-            return TDelegate(Callable);
         }
 
     private:
-        explicit TDelegate(std::function<bool(TArgs ...)>&& InCallable)
-            : Callable(std::move(InCallable))
-        {
-        }
-
-    private:
-        std::function<bool(TArgs ...)> Callable;
+        std::function<bool(TArgs...)> Callable;
     };
 
     using CSimpleDelegate = TDelegate<>;
-}
+} // namespace OGS

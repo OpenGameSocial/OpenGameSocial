@@ -1,12 +1,12 @@
 #pragma once
 
-#include <string>
 #include <cstdint>
+#include <string>
 
 #include "Core/Common/Codegen.h"
 
 
-class WeatherResponse
+class CWeatherResponseItem
 {
 public:
     SERIALIZABLE()
@@ -21,14 +21,29 @@ public:
     SERIALIZABLE()
     std::optional<std::string> Summary;
 
-    SERIALIZE_METHODS(WeatherResponse)
+    SERIALIZE_METHODS(CWeatherResponseItem)
 };
 
-class WeatherRequest
+class CWeather
 {
 public:
-    SERIALIZABLE()
-    int32_t Count = 0;
+    static constexpr const char* Endpoint = "WeatherForecast";
 
-    SERIALIZE_METHODS(WeatherRequest)
+    class CRequest
+    {
+    public:
+        SERIALIZABLE()
+        int32_t Count = 0;
+
+        SERIALIZE_METHODS(CRequest)
+    };
+
+    class CResponse
+    {
+    public:
+        SERIALIZABLE()
+        std::vector<CWeatherResponseItem> Data;
+
+        SERIALIZE_METHODS(CResponse)
+    };
 };

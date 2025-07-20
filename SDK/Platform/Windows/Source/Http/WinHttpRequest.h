@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #include "Core/Common/Guid.h"
-#include "Core/Http/Http.h"
+#include "Core/Http/HttpEnums.h"
 #include "Core/Http/Uri.h"
 
 #include <windows.h>

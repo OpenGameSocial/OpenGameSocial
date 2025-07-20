@@ -12,8 +12,18 @@ public class AutoInitHandler : IMacroHandler
 
     public bool CanHandle(ref ParsingContext context)
     {
-        return context.File.EndsWith(".cpp") &&
-               context.CurrentLine.StartsWith(Macro, StringComparison.InvariantCulture);
+        var hasMacro = context.CurrentLine.StartsWith(Macro, StringComparison.InvariantCulture);
+        var isCpp = context.File.EndsWith(".cpp");
+
+        if (hasMacro && !isCpp)
+        {
+            Console.WriteLine(
+                $"[ERROR] Macro {Macro.Trim()} is found in non-compilation-unit file: {context.File}:{context.LineNumber}");
+            Console.WriteLine("[ERROR] This is fatal error and compilation will be aborted.");
+            Environment.Exit(-1);
+        }
+
+        return hasMacro && isCpp;
     }
 
     public void Handle(ref ParsingContext context)
@@ -54,5 +64,7 @@ public class AutoInitHandler : IMacroHandler
         }
 
         file.AppendLine("}");
+
+        Console.WriteLine($"[INFO] Generated {_initializers.Count} initializer(s)");
     }
 }

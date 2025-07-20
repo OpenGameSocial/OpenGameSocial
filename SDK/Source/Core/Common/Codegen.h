@@ -14,12 +14,30 @@
     friend void from_json(const nlohmann::json& input, type& output);
 
 template <typename T>
-struct TFieldRealType;
+struct TRealType;
 
 template <typename T>
-struct TFieldRealType<std::optional<T>>
+struct TRealType
 {
-    using Type = T;
+    using Type = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<T>>>;
+};
+
+template <typename T>
+struct TRealType<std::optional<T>>
+{
+    using Type = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<T>>>;
+};
+
+template <typename T>
+struct TRealType<std::shared_ptr<T>>
+{
+    using Type = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<T>>>;
+};
+
+template <typename T>
+struct TRealType<std::enable_shared_from_this<T>>
+{
+    using Type = std::remove_const_t<std::remove_reference_t<std::remove_pointer_t<T>>>;
 };
 
 class CAutoInitable

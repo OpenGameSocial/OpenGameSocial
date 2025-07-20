@@ -34,16 +34,25 @@ public class OutputFilesManager
     {
         Directory.CreateDirectory(root);
         
-        foreach (var (file, content) in _files)
+        foreach (var (file, sb) in _files)
         {
             var path = Path.Combine(root, file);
+            var contents = sb.ToString();
 
             if (File.Exists(path))
             {
+                var oldContents = File.ReadAllText(path);
+
+                if (contents.Equals(oldContents, StringComparison.InvariantCulture))
+                {
+                    Console.WriteLine($"[INFO] {Path.GetFileName(path)} is unchanged. Skipping.");
+                    continue;
+                }
+                
                 File.Delete(path);
             }
 
-            File.WriteAllText(path, content.ToString());
+            File.WriteAllText(path, contents);
             File.SetLastWriteTime(path, DateTime.Now);
         }
     }

@@ -5,7 +5,7 @@
 
 #include "Core/Common/Guid.h"
 #include "Core/Http/Uri.h"
-#include "Core/Http/Http.h"
+#include "Core/Http/HttpEnums.h"
 
 
 namespace OGS::Http
@@ -21,7 +21,7 @@ namespace OGS::Http
             explicit CMacHttpRequest(const CGuid& InGuid)
                 : Guid(InGuid)
             {
-                SetMethod(EHttpMethod::GET);
+                SetMethod(EHttpMethod::Get);
             }
 
             CMacHttpRequest(const CMacHttpRequest&) = delete;

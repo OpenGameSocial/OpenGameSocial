@@ -1,10 +1,15 @@
-﻿namespace CodegenTool;
+﻿using System.Diagnostics;
+
+namespace CodegenTool;
 
 internal static class Program
 {
     public static void Main(string[] args)
     {
-        Console.WriteLine("Codegen started!");
+        var sw = new Stopwatch();
+        sw.Start();
+        
+        Console.WriteLine("[INFO] Codegen started!");
 
         var root = args[0];
         var sourceDir = args[1];
@@ -32,7 +37,9 @@ internal static class Program
 
         MacroHandlingManager.Instance.Flush(outputDir);
 
-        Console.WriteLine("Codegen finished!");
+        sw.Stop();
+        Console.WriteLine($"[INFO] Codegen took {sw.ElapsedMilliseconds}ms.");
+        Console.WriteLine("[INFO] Codegen finished!");
     }
 
     private static IEnumerable<string> CollectSources(string path, string pattern, IEnumerable<string> unionWith)

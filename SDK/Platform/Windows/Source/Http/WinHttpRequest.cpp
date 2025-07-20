@@ -55,19 +55,19 @@ namespace OGS::Http::Win64
 
         switch (InMethod)
         {
-        case EHttpMethod::GET:
+        case EHttpMethod::Get:
             Method = L"GET";
             break;
-        case EHttpMethod::POST:
+        case EHttpMethod::Post:
             Method = L"POST";
             break;
-        case EHttpMethod::PUT:
+        case EHttpMethod::Put:
             Method = L"PUT";
             break;
-        case EHttpMethod::DELETE:
+        case EHttpMethod::Delete:
             Method = L"DELETE";
             break;
-        case EHttpMethod::PATCH:
+        case EHttpMethod::Patch:
             Method = L"PATCH";
             break;
         }
@@ -202,7 +202,8 @@ namespace OGS::Http::Win64
 
     CHttpResponse CWinHttpRequest::GetFromWinError(DWORD dwErrorCode)
     {
-        static const std::map<DWORD, std::string> ErrorMap = {
+        static const std::map<DWORD, std::string> ErrorMap =
+        {
             {ERROR_WINHTTP_TIMEOUT, "Request timed out"},
             {ERROR_WINHTTP_CONNECTION_ERROR, "Failed to connect to the server"},
             {ERROR_WINHTTP_NAME_NOT_RESOLVED, "DNS name could not be resolved"},
