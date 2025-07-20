@@ -6,6 +6,7 @@ namespace CodegenTool.Handlers;
 public class SerializableHandler : IMacroHandler
 {
     private static readonly Regex NamespaceRegex = new(@"namespace\s+([A-z0-9:]*)", RegexOptions.Compiled);
+    private static readonly Regex TypeRegex = new(@"(?s:class|struct)\s+([A-z0-9:]*)", RegexOptions.Compiled);
     private static readonly Regex MemberNameRegex = new(@"([A-z0-9<>:]+)\s+([A-z0-9]+)", RegexOptions.Compiled);
 
     public string Macro => MacroNames.Serializable;
@@ -42,7 +43,7 @@ public class SerializableHandler : IMacroHandler
         var memberName = match.Groups[2].Value;
 
         var typeName = context.Scope.Peek().Split(' ')[1];
-        var ns = GetNamespace(context.Scope);
+        var ns = GetNamespaceAndParentTypes(context.Scope);
 
         var descriptor = GetDescriptor(ref context, ns, typeName);
         descriptor.Fields.Add(new(memberType, memberName));
@@ -111,20 +112,36 @@ public class SerializableHandler : IMacroHandler
         output.AppendLine("}");
     }
 
-    private static string GetNamespace(Stack<string> stack)
+    private static string GetNamespaceAndParentTypes(Stack<string> stack)
     {
         var result = new List<string>();
 
         foreach (var s in stack)
         {
-            if (!s.Trim().StartsWith("namespace", StringComparison.InvariantCulture))
+            var trimmed = s.Trim();
+            
+            if (trimmed.StartsWith("namespace", StringComparison.InvariantCulture))
+            {
+                var match = NamespaceRegex.Match(s);
+                var namespaceName = match.Groups[1].Value;
+                result.Add(namespaceName);
+
+                continue;
+            }
+            
+            var typeMatch = TypeRegex.Match(s);
+
+            if (!typeMatch.Success)
             {
                 continue;
             }
+            
+            result.Add(typeMatch.Groups[1].Value);
+        }
 
-            var match = NamespaceRegex.Match(s);
-            var namespaceName = match.Groups[1].Value;
-            result.Add(namespaceName);
+        if (stack.Count > 0)
+        {
+            result.RemoveAt(0);
         }
 
         result.Reverse();

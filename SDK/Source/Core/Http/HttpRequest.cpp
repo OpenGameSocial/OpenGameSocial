@@ -41,5 +41,5 @@ CHttpRequest::CHttpRequest() : PlatformRequest(Guid)
 
 void CHttpRequest::Complete(CHttpResponse&& Response)
 {
-    OnComplete.Execute(Response);
+    OnCompleteDelegate.Execute(std::move(Response));
 }

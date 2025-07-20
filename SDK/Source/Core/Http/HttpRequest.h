@@ -2,24 +2,24 @@
 
 #include <string>
 
+#include "Core/Common/Delegate.h"
+#include "Core/Common/Guid.h"
 #include "Http.h"
 #include "HttpResponse.h"
 #include "Platform.h"
-#include "Core/Common/Delegate.h"
-#include "Core/Common/Guid.h"
 
 
 namespace OGS::Http
 {
-    using CHttpResponseDelegate = TDelegate<const CHttpResponse&>;
+    using CHttpResponseDelegate = TDelegate<CHttpResponse&&>;
 
-    class CHttpRequest final : public std::enable_shared_from_this<CHttpRequest>
+    class CHttpRequest : public std::enable_shared_from_this<CHttpRequest>
     {
     public:
         CHttpRequest(const CHttpRequest&) = delete;
         CHttpRequest& operator=(const CHttpRequest&) = delete;
 
-        ~CHttpRequest() = default;
+        virtual ~CHttpRequest() = default;
 
         static std::shared_ptr<CHttpRequest> CreateRequest();
 
@@ -30,9 +30,9 @@ namespace OGS::Http
 
         void SetBody(const std::string& Body);
 
-        void SetOnCompleted(const CHttpResponseDelegate& InDelegate)
+        CHttpResponseDelegate& OnComplete()
         {
-            OnComplete = InDelegate;
+            return OnCompleteDelegate;
         }
 
         const CGuid& GetGuid() const
@@ -42,16 +42,62 @@ namespace OGS::Http
 
         bool Run();
 
-    private:
+    protected:
         CHttpRequest();
 
+    private:
         void Complete(CHttpResponse&& Response);
 
     private:
         CGuid Guid;
-        CHttpResponseDelegate OnComplete;
+        CHttpResponseDelegate OnCompleteDelegate;
         CPlatformHttpRequest PlatformRequest;
 
         friend class CHttpManager;
     };
-}
+
+    template <typename T>
+    class THttpRequest : public CHttpRequest
+    {
+    public:
+        using CRequest = typename T::CRequest;
+        using CResponse = typename T::CResponse;
+        using CCompleteDelegate = TDelegate<THttpResponse<T>&&>;
+
+        static std::shared_ptr<THttpRequest> CreateRequest()
+        {
+            auto Result = std::make_shared<THttpRequest>();
+            Result->Init();
+
+            return Result;
+        }
+
+        CCompleteDelegate& OnComplete()
+        {
+            return Delegate;
+        }
+
+    private:
+        void Init()
+        {
+            auto SharedThis = std::static_pointer_cast<THttpRequest>(shared_from_this());
+            CHttpRequest::OnComplete().BindShared(SharedThis, &THttpRequest::OnRequestComplete);
+        }
+
+        void OnRequestComplete(CHttpResponse&& Response)
+        {
+            THttpResponse<T> HttpResponse(std::move(Response));
+            Delegate.Execute(std::move(HttpResponse));
+        }
+
+    private:
+        CCompleteDelegate Delegate;
+    };
+
+    template <typename T, EHttpMethod Method>
+    typename THttpRequest<T>::CCompleteDelegate SendRequest(const typename THttpRequest<T>::CRequest& Request)
+    {
+        auto HttpRequest = THttpRequest<T>::CreateRequest();
+        HttpRequest->SetMethod(Method);
+    }
+} // namespace OGS::Http

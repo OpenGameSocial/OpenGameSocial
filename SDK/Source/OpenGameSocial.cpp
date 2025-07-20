@@ -10,7 +10,7 @@
 
 static OGS::TLogCategory LogOpenGameSocial("LogOpenGameSocial");
 
-static void OnHttpRequestCompleted(const OGS::Http::CHttpResponse& Resp)
+static void OnHttpRequestCompleted(OGS::Http::THttpResponse<CWeather>&& Resp)
 {
     printf("Received http response [%i]:\n", Resp.GetCode());
 
@@ -19,8 +19,9 @@ static void OnHttpRequestCompleted(const OGS::Http::CHttpResponse& Resp)
         return;
     }
 
-    std::vector<WeatherResponse> Weather = nlohmann::json::parse(Resp.GetResult());
     printf("Today's weather:\n");
+
+    const auto& Weather = Resp->Data;
 
     for (const auto& Data : Weather)
     {
@@ -41,17 +42,18 @@ void OGS_Init(const OGS_Init_Options* Options)
 {
     LogOpenGameSocial.Verbose("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
 
-    WeatherRequest RequestModel{
+    CWeather::CRequest RequestModel
+    {
         .Count = 256
     };
     nlohmann::json j = RequestModel;
 
-    const auto Request = OGS::Http::CHttpRequest::CreateRequest();
+    const auto Request = OGS::Http::THttpRequest<CWeather>::CreateRequest();
     Request->SetUrl(std::string("http://localhost:5211/WeatherForecast"));
     Request->SetMethod(OGS::Http::EHttpMethod::POST);
     Request->SetHeader("Content-Type", "application/json");
     Request->SetBody(j.dump());
-    Request->SetOnCompleted(OGS::Http::CHttpResponseDelegate::CreateStatic(OnHttpRequestCompleted));
+    Request->OnComplete().BindStatic(&OnHttpRequestCompleted);
     Request->Run();
 
     RunAutoInit();
