@@ -13,7 +13,8 @@ namespace OGS::Http
     public:
         CHttpResponse() = default;
 
-        CHttpResponse(const int32_t InCode, std::string InResult) : Code(InCode), ResultStr(std::move(InResult))
+        CHttpResponse(const int32_t InCode, std::string InResult) :
+        Code(InCode), ResultStr(std::move(InResult))
         {}
 
         virtual ~CHttpResponse() = default;
@@ -44,9 +45,18 @@ namespace OGS::Http
     public:
         using CResponse = typename TResponse::CResponse;
 
-        THttpResponse(CHttpResponse&& Response) : CHttpResponse(Response.GetCode(), std::move(Response.GetResultStr()))
+        THttpResponse(CHttpResponse&& Response) :
+        CHttpResponse(Response.GetCode(), std::move(Response.GetResultStr()))
         {
-            Result = nlohmann::json::parse(ResultStr);
+            auto Json = nlohmann::json::parse(ResultStr, nullptr, false, true);
+
+            if (Json.is_discarded())
+            {
+                // TODO: logme
+                return;
+            }
+
+            Result = Json;
         }
 
         [[nodiscard]] CResponse&& GetResult()

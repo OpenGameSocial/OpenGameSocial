@@ -4,7 +4,7 @@
 
 #include "Core/Common/Delegate.h"
 #include "Core/Common/Guid.h"
-#include "Http.h"
+#include "HttpEnums.h"
 #include "HttpResponse.h"
 #include "Platform.h"
 
@@ -93,11 +93,4 @@ namespace OGS::Http
     private:
         CCompleteDelegate Delegate;
     };
-
-    template <typename T, EHttpMethod Method>
-    typename THttpRequest<T>::CCompleteDelegate SendRequest(const typename THttpRequest<T>::CRequest& Request)
-    {
-        auto HttpRequest = THttpRequest<T>::CreateRequest();
-        HttpRequest->SetMethod(Method);
-    }
 } // namespace OGS::Http

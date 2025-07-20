@@ -1,6 +1,7 @@
 #include "OpenGameSocial.h"
 
 #include "WeatherModels.h"
+#include "Core/Http/Http.h"
 #include "Core/Threading/ThreadPool.h"
 
 #include "Core/Http/HttpManager.h"
@@ -9,6 +10,18 @@
 
 
 static OGS::TLogCategory LogOpenGameSocial("LogOpenGameSocial");
+
+struct CBackendUrlProvider
+{
+public:
+    template <typename T>
+    static std::string GetUrlPath()
+    {
+        static std::string UrlBase = "http://localhost:5211/";
+
+        return UrlBase + T::Endpoint;
+    }
+};
 
 static void OnHttpRequestCompleted(OGS::Http::THttpResponse<CWeather>&& Resp)
 {
@@ -46,15 +59,9 @@ void OGS_Init(const OGS_Init_Options* Options)
     {
         .Count = 256
     };
-    nlohmann::json j = RequestModel;
 
-    const auto Request = OGS::Http::THttpRequest<CWeather>::CreateRequest();
-    Request->SetUrl(std::string("http://localhost:5211/WeatherForecast"));
-    Request->SetMethod(OGS::Http::EHttpMethod::POST);
-    Request->SetHeader("Content-Type", "application/json");
-    Request->SetBody(j.dump());
-    Request->OnComplete().BindStatic(&OnHttpRequestCompleted);
-    Request->Run();
+    OGS::Http::Post<CWeather, CBackendUrlProvider>(RequestModel)
+        .BindStatic(&OnHttpRequestCompleted);
 
     RunAutoInit();
 

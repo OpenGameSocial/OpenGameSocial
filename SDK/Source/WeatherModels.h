@@ -27,6 +27,8 @@ public:
 class CWeather
 {
 public:
+    static constexpr const char* Endpoint = "WeatherForecast";
+
     class CRequest
     {
     public:
