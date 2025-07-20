@@ -13,4 +13,3 @@ Makefile
 Bin/
 Build/
 cmake-*/
-Codegen/

@@ -202,7 +202,8 @@ namespace OGS::Http::Win64
 
     CHttpResponse CWinHttpRequest::GetFromWinError(DWORD dwErrorCode)
     {
-        static const std::map<DWORD, std::string> ErrorMap = {
+        static const std::map<DWORD, std::string> ErrorMap =
+        {
             {ERROR_WINHTTP_TIMEOUT, "Request timed out"},
             {ERROR_WINHTTP_CONNECTION_ERROR, "Failed to connect to the server"},
             {ERROR_WINHTTP_NAME_NOT_RESOLVED, "DNS name could not be resolved"},

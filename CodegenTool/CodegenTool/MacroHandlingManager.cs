@@ -43,17 +43,18 @@ public class MacroHandlingManager
             
             context.Index = i;
 
-            if (trimmed.StartsWith('{') && (trimmed.EndsWith('}') || trimmed.EndsWith("};")))
+            if (trimmed.Contains('{') && (trimmed.Contains('}') || trimmed.Contains("};")))
             {
                 continue;
             }
 
             if (trimmed.StartsWith('{'))
             {
-                context.Scope.Push(lines[i - 1].Trim());
+                var scopeLine = lines[i - 1].Trim();
+                context.Scope.Push(scopeLine);
             }
 
-            if (trimmed.EndsWith('}'))
+            if (trimmed.EndsWith('}') || trimmed.EndsWith("};"))
             {
                 context.Scope.Pop();
             }
