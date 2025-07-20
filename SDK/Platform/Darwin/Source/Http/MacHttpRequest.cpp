@@ -9,19 +9,19 @@ void CMacHttpRequest::SetMethod(EHttpMethod InMethod)
 {
     switch (InMethod)
     {
-    case EHttpMethod::GET:
+    case EHttpMethod::Get:
         Method = "GET";
         break;
-    case EHttpMethod::POST:
+    case EHttpMethod::Post:
         Method = "POST";
         break;
-    case EHttpMethod::PUT:
+    case EHttpMethod::Put:
         Method = "PUT";
         break;
-    case EHttpMethod::DELETE:
+    case EHttpMethod::Delete:
         Method = "DELETE";
         break;
-    case EHttpMethod::PATCH:
+    case EHttpMethod::Patch:
         Method = "PATCH";
         break;
     }
