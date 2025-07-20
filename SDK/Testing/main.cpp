@@ -5,7 +5,7 @@
 
 static void OnLoginWithOpenId(OGS_Result Result, void* UserObject, const OGS_Account_LoginWithOpenId_CallbackData* Data)
 {
-    // DEBUG_BREAK();
+    DEBUG_BREAK();
 }
 
 static void DoLogging(OGS_ELogLevel Level, const char* Message)

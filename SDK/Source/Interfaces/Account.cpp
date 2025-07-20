@@ -1,4 +1,6 @@
 #include "OpenGameSocial.h"
+#include "Services/ServiceContainer.h"
+#include "Services/Account/AccountService.h"
 // #include "Http/WinHttpRequest.h"
 
 
@@ -6,19 +8,30 @@ OGS_Result OGS_Account_LoginWithOpenId(const OGS_Account_LoginWithOpenId_Options
                                        void* UserObject,
                                        OGS_Account_LoginWithOpenId_Callback Callback)
 {
-    // static auto Request = OGS::Http::CPlatformHttpRequest::Create();
-    // Request->SetUrl(L"https://api.ipify.org/");
-    // Request->SetMethod(L"GET");
-    // Request->Run();
-    
-    if (Callback)
+    using namespace OGS::Services;
+    using namespace OGS::Services::Account;
+
+    auto Service = CServiceContainer::GetService<CAccountService>();
+
+    auto Lambda = [Callback, UserObject](OGS_TitleAccount AccountId, EAuthenticationStatus Status)
     {
         OGS_Account_LoginWithOpenId_CallbackData Data
         {
-            .LocalAccount = INVALID_TITLE_ACCOUNT
+            .LocalAccount = AccountId
         };
-        Callback(OGS_Success, UserObject, &Data);
-    }
+
+        if (Status == EAuthenticationStatus::Authenticated)
+        {
+            Callback(OGS_Success, UserObject, &Data);
+        }
+        else
+        {
+            Callback(OGS_UnknownError, UserObject, &Data);
+        }
+    };
+
+    auto Delegate = CAccountService::CAuthenticationCallback::CreateStaticLambda(Lambda);
+    Service->Authenticate(Options->IdentityService, Options->Token, Delegate);
 
     return OGS_Success;
 }

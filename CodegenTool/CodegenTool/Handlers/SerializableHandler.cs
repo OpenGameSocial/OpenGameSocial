@@ -43,9 +43,12 @@ public class SerializableHandler : IMacroHandler
         var memberName = match.Groups[2].Value;
 
         var typeName = context.Scope.Peek().Split(' ')[1];
-        var ns = GetNamespaceAndParentTypes(context.Scope);
+        var fqn = GetNamespace(context.Scope, true);
+        var ns = GetNamespace(context.Scope, false);
+        
+        fqn = string.Join("::", fqn, typeName);
 
-        var descriptor = GetDescriptor(ref context, ns, typeName);
+        var descriptor = GetDescriptor(ref context, ns, fqn, typeName);
         descriptor.Fields.Add(new(memberType, memberName));
     }
 
@@ -77,6 +80,12 @@ public class SerializableHandler : IMacroHandler
 
     private static void GenerateJsonOperations(StringBuilder output, SerializableTypeDescriptor descriptor)
     {
+        if (!string.IsNullOrWhiteSpace(descriptor.Namespace))
+        {
+            output.AppendLine($"namespace {descriptor.Namespace}");
+            output.AppendLine("{");
+        }
+        
         output.AppendLine($"void to_json(nlohmann::json& output, const {descriptor.FullyQualifiedType}& input)");
         output.AppendLine("{");
 
@@ -110,9 +119,13 @@ public class SerializableHandler : IMacroHandler
         }
 
         output.AppendLine("}");
+        if (!string.IsNullOrWhiteSpace(descriptor.Namespace))
+        {
+            output.AppendLine("}");
+        }
     }
 
-    private static string GetNamespaceAndParentTypes(Stack<string> stack)
+    private static string GetNamespace(Stack<string> stack, bool withParentTypes)
     {
         var result = new List<string>();
 
@@ -128,6 +141,11 @@ public class SerializableHandler : IMacroHandler
 
                 continue;
             }
+
+            if (!withParentTypes)
+            {
+                continue;
+            }
             
             var typeMatch = TypeRegex.Match(s);
 
@@ -139,7 +157,7 @@ public class SerializableHandler : IMacroHandler
             result.Add(typeMatch.Groups[1].Value);
         }
 
-        if (stack.Count > 0)
+        if (withParentTypes && stack.Count > 0)
         {
             result.RemoveAt(0);
         }
@@ -149,10 +167,8 @@ public class SerializableHandler : IMacroHandler
         return string.Join("::", result);
     }
 
-    private SerializableTypeDescriptor GetDescriptor(ref ParsingContext context, string ns, string type)
+    private SerializableTypeDescriptor GetDescriptor(ref ParsingContext context, string ns, string fqn, string type)
     {
-        var fqn = string.Join("::", ns, type);
-
         if (_types.TryGetValue(fqn, out var descriptor))
         {
             return descriptor;
@@ -163,7 +179,7 @@ public class SerializableHandler : IMacroHandler
 
         _includes.Add(includePath);
 
-        _types.Add(fqn, descriptor = new SerializableTypeDescriptor(includePath, ns, type));
+        _types.Add(fqn, descriptor = new SerializableTypeDescriptor(includePath, ns, type, fqn));
         return descriptor;
     }
 
@@ -174,15 +190,16 @@ public class SerializableHandler : IMacroHandler
         public string Namespace { get; }
         public string Name { get; }
 
-        public string FullyQualifiedType => string.Join("::", Namespace, Name);
+        public string FullyQualifiedType { get; }
 
         public List<SerializableFieldDescriptor> Fields { get; } = new();
 
-        public SerializableTypeDescriptor(string includeFile, string ns, string name)
+        public SerializableTypeDescriptor(string includeFile, string ns, string name, string fullyQualifiedType)
         {
             IncludeFile = includeFile;
             Namespace = ns;
             Name = name;
+            FullyQualifiedType = fullyQualifiedType;
         }
     }
 

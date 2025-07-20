@@ -12,9 +12,19 @@ namespace OGS
     public:
         TDelegate() = default;
 
-        bool Execute(TArgs... args)
+        bool TryExecute(TArgs... args) const
         {
             return IsBound() && Callable(std::forward<TArgs>(args)...);
+        }
+
+        void Execute(TArgs... args) const
+        {
+            if (!IsBound())
+            {
+                return;
+            }
+
+            Callable(std::forward<TArgs>(args)...);
         }
 
         [[nodiscard]] bool IsBound() const

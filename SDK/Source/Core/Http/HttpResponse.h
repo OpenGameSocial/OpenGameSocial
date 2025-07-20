@@ -74,6 +74,10 @@ namespace OGS::Http
             return &Result;
         }
 
+        [[nodiscard]] operator bool() const
+        {
+            return GetCode() == 200;
+        }
 
         [[nodiscard]] const CResponse* operator->() const
         {
