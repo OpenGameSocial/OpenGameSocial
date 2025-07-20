@@ -12,5 +12,13 @@ namespace OGS::Services::Accounts
     public:
         void Init() override;
         void DeInit() override;
+
+        const std::string& GetToken() const
+        {
+            return Token;
+        }
+
+    private:
+        std::string Token;
     };
 }

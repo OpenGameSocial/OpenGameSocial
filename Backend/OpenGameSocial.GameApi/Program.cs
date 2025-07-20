@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using MongoDB.Driver;
 using OpenGameSocial.Core.Config;
 using Scalar.AspNetCore;
@@ -12,6 +13,9 @@ internal static class Program
 
         builder.Services.AddControllers();
         builder.Services.AddOpenApi();
+        
+        builder.Services.AddAuthentication("TestScheme")
+            .AddScheme<AuthenticationSchemeOptions, CustomTokenAuthenticationHandler>("TestScheme", null);
 
         builder.Services
             .AddOpenGameSocial(typeof(Program).Assembly)
@@ -42,7 +46,7 @@ internal static class Program
             });
         }
 
-        app.UseHttpsRedirection();
+        // app.UseHttpsRedirection();
 
         app.UseAuthorization();
 

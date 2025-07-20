@@ -16,9 +16,17 @@ void OGS::Services::CServiceContainer::Init()
     {
         Service.Setup(Service.Service.get());
     }
+
+    for (auto& [Type, Service] : ServiceMap)
+    {
+        Service.Service->Init();
+    }
 }
 
 void OGS::Services::CServiceContainer::DeInit()
 {
-
+    for (auto& [Type, Service] : ServiceMap)
+    {
+        Service.Service->DeInit();
+    }
 }

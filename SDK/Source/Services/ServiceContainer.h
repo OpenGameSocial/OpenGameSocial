@@ -61,18 +61,26 @@ namespace OGS::Services
         }
 
         template <typename TService>
-        std::shared_ptr<TService> GetService()
+        static std::shared_ptr<TService> GetService()
         {
             static_assert(std::is_base_of_v<CServiceBase, TService>);
 
-            const auto Found = ServiceMap.find(GetTypeId<TService>());
+            auto& Container = Get();
 
-            if (Found == ServiceMap.end())
+            const auto Found = Container.ServiceMap.find(GetTypeId<TService>());
+
+            if (Found == Container.ServiceMap.end())
             {
                 return {};
             }
 
             return std::static_pointer_cast<TService>(Found->second.Service);
+        }
+
+        template <typename TService>
+        static std::weak_ptr<TService> GetServiceWeak()
+        {
+            return GetService<TService>();
         }
 
     private:

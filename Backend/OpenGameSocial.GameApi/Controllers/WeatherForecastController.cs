@@ -23,7 +23,7 @@ public class WeatherForecastController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost(Name = "GetWeatherForecast")]
+    [HttpPost]
     public WeatherForecastResult Post([FromBody] WeatherRequestModel model)
     {
         return new()

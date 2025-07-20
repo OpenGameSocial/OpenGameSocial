@@ -10,15 +10,16 @@ namespace OGS::Http
     struct CJsonMode
     {
     public:
-        using CHeaders = std::vector<std::pair<std::string, std::string>>;
-
         template <typename TBody>
         static void SetupRequest(CHttpRequest& Request, const TBody& Body)
         {
-            nlohmann::json Json = Body;
+            if constexpr (!std::is_empty_v<TBody>)
+            {
+                nlohmann::json Json = Body;
 
-            Request.SetHeader("Content-Type", "application/json");
-            Request.SetBody(Json.dump());
+                Request.SetHeader("Content-Type", "application/json");
+                Request.SetBody(Json.dump());
+            }
         }
     };
 

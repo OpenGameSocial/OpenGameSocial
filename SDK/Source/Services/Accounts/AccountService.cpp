@@ -4,7 +4,9 @@
 namespace OGS::Services::Accounts
 {
     void CAccountService::Init()
-    {}
+    {
+        Token = "Test test-token";
+    }
 
     void CAccountService::DeInit()
     {}
