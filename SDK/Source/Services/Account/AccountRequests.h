@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Common/Codegen.h"
+#include "Core/Common/Date.h"
 
 
 namespace OGS::Services::Account
@@ -25,6 +26,9 @@ namespace OGS::Services::Account
         class CResponse
         {
         public:
+            SERIALIZABLE()
+            CDateTime ValidUntil;
+
             SERIALIZABLE()
             std::string Token;
 

@@ -59,6 +59,10 @@
 
 #define CHECK(expr)
 
+#define INVALID_SUBSCRIPTION_ID (0xFFFFFFFFFFFFFFFF)
+
+typedef uint64_t OGS_SubscriptionId;
+
 enum OGS_ELogLevel
 {
     OGS_Verbose = 0,

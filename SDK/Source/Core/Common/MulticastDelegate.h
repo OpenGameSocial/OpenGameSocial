@@ -37,6 +37,17 @@ namespace OGS
             return Serial;
         }
 
+        [[nodiscard]] uint64_t ToUnsignedInt64() const
+        {
+            return static_cast<uint64_t>(Serial) << 32 | DelegateSerial;
+        }
+
+        [[nodiscard]] static CDelegateHandle FromUnsignedInt64(uint64_t InValue)
+        {
+            return {static_cast<uint32_t>(InValue & 0xFFFFFFFF),
+                    static_cast<uint32_t>(InValue >> 32)};
+        }
+
     public:
         static constexpr uint32_t InvalidSerial = std::numeric_limits<uint32_t>::max();
 

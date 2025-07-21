@@ -1,5 +1,8 @@
 #include "OpenGameSocial.h"
 
+#include <iostream>
+#include <date/date.h>
+
 #include "Core/Threading/ThreadPool.h"
 
 #include "Core/Logging/Logger.h"

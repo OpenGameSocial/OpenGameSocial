@@ -13,7 +13,7 @@ public class Controller : ControllerBase
         return new AuthenticateResponse
         {
             Token = "test-token",
-            ValidUntil = DateTime.Now.AddMinutes(5)
+            ValidUntil = DateTime.Now.AddSeconds(60 * 5 + 10)
         };
     }
 }

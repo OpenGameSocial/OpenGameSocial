@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <functional>
 #include <memory>
 #include <unordered_map>
@@ -8,6 +7,7 @@
 #include "Core/Common/Codegen.h"
 #include "Core/Common/TypeUtils.h"
 #include "Services/ServiceTraits.h"
+
 
 #define SERVICE_REGISTER(serviceTypeName) \
     new OGS::Services::CServiceInitializer<serviceTypeName>()
@@ -17,7 +17,15 @@ namespace OGS::Services
     class CServiceBase : public std::enable_shared_from_this<CServiceBase>
     {
     public:
+        CServiceBase() = default;
+
+        CServiceBase(const CServiceBase& other) = delete;
+        CServiceBase(CServiceBase&& other) noexcept = delete;
+
         virtual ~CServiceBase() = default;
+
+        CServiceBase& operator=(const CServiceBase& other) = delete;
+        CServiceBase& operator=(CServiceBase&& other) noexcept = delete;
 
         virtual void Init() = 0;
         virtual void DeInit() = 0;

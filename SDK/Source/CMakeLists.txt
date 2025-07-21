@@ -39,6 +39,7 @@ add_dependencies(SDK GenerateSources)
 set(OGS_LIBS
         mbedtls
         nlohmannjson
+        date
 )
 
 # Platform
