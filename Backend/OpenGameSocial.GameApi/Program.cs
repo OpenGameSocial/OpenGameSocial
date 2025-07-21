@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using MongoDB.Driver;
 using OpenGameSocial.Core.Config;
+using OpenGameSocial.GameApi.Signal;
 using Scalar.AspNetCore;
 
 namespace OpenGameSocial.GameApi;
@@ -35,6 +36,8 @@ internal static class Program
         builder.Services.Configure<MongoConfig>(mongoSection);
         builder.Services.Configure<IdentityProvidersConfig>(configuration.GetSection("IdentityProviders"));
 
+        builder.Services.AddSignalR();
+        
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
@@ -51,6 +54,8 @@ internal static class Program
         app.UseAuthorization();
 
         app.MapControllers();
+        
+        app.MapHub<TestHub>("/testHub");
 
         app.Run();
     }

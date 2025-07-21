@@ -58,7 +58,7 @@ namespace OGS::Services::Traits
     };
 
     template <typename T>
-    struct ExtractServiceType<std::shared_ptr<T>>
+    struct ExtractServiceType<std::weak_ptr<T>>
     {
         using Type = T;
     };

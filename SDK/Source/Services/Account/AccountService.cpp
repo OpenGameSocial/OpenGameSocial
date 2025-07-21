@@ -46,8 +46,6 @@ namespace OGS::Services::Account
     {
         using namespace OGS::Backend;
 
-        const auto SharedThis = std::static_pointer_cast<CAccountService>(shared_from_this());
-
         auto RequestCallback = [this, Callback](Http::THttpResponse<CAuthenticate>&& Response)
         {
             if (!Response)
@@ -74,13 +72,14 @@ namespace OGS::Services::Account
         Http::Post<CAuthenticate, CBackendUrlProvider, CAuthenticatedMode>({
             .Provider = Provider,
             .Data = Token
-        }).BindSharedLambda(SharedThis, RequestCallback);
+        }).BindSharedLambda(AsShared(), RequestCallback);
     }
 
     void CAccountService::ChangeStatus(EAuthenticationStatus InStatus)
     {
+        auto OldStatus = Status;
         Status = InStatus;
-        StatusChanged.Broadcast(Status);
+        StatusChanged.Broadcast(OldStatus, Status);
     }
 } // namespace OGS::Services::Account
 

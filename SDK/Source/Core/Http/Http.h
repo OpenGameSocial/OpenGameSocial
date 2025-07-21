@@ -28,7 +28,7 @@ namespace OGS::Http
     {
         auto HttpRequest = THttpRequest<T>::CreateRequest();
         HttpRequest->SetMethod(Method);
-        HttpRequest->SetUrl(TUrlProvider::template GetUrlPath<T>());
+        HttpRequest->SetUrl(TUrlProvider::template GetUrl<T>());
         TMode::SetupRequest(*HttpRequest, Request);
 
         HttpRequest->Run();

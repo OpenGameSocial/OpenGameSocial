@@ -17,10 +17,11 @@ namespace OGS::Services::Account
         NotAuthenticated,
     };
 
-    class CAccountService final : public CServiceBase, public CTicker
+    class CAccountService final : public TService<CAccountService>, public CTicker
     {
     public:
-        using CStatusChangedDelegate = TMulticastDelegate<EAuthenticationStatus>;
+        using CStatusChangedDelegate = TMulticastDelegate<EAuthenticationStatus /*OldStatus*/,
+                                                          EAuthenticationStatus /*NewStatus*/>;
         using CAuthenticationExpiredDelegate = CSimpleMulticastDelegate;
 
         using CAuthenticationCallback = TDelegate<OGS_TitleAccount, EAuthenticationStatus>;
@@ -31,7 +32,7 @@ namespace OGS::Services::Account
         void Tick(double ElapsedSeconds) override;
 
         void Authenticate(const std::string& Provider, const std::string& Token,
-            CAuthenticationCallback Callback = {});
+                          CAuthenticationCallback Callback = {});
 
         const std::string& GetToken() const
         {

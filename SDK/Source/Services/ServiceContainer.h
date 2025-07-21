@@ -31,6 +31,34 @@ namespace OGS::Services
         virtual void DeInit() = 0;
     };
 
+    template <typename TChild>
+    class TService : public CServiceBase
+    {
+    public:
+        std::shared_ptr<TChild> AsShared()
+        {
+            return std::static_pointer_cast<TChild>(shared_from_this());
+        }
+
+        std::weak_ptr<TChild> AsWeak()
+        {
+            return std::weak_ptr<TChild>(AsShared());
+        }
+
+        std::shared_ptr<const TChild> AsShared() const
+        {
+            return std::static_pointer_cast<const TChild>(shared_from_this());
+        }
+
+        std::weak_ptr<const TChild> AsWeak() const
+        {
+            return std::weak_ptr<const TChild>(AsShared());
+        }
+
+    protected:
+        using ThisClass = TChild;
+    };
+
     class CServiceContainer final
     {
         using CServicePtr = std::shared_ptr<CServiceBase>;
@@ -96,7 +124,7 @@ namespace OGS::Services
         auto GetServiceForInject()
         {
             using ServiceType = typename Traits::ExtractServiceType<TService>::Type;
-            return GetService<ServiceType>();
+            return GetServiceWeak<ServiceType>();
         }
 
         template <typename... TService>

@@ -4,6 +4,9 @@ file(GLOB_RECURSE GENERATED_SOURCE ${CMAKE_BINARY_DIR}/Generated/*.cpp)
 set(PLATFORM_SRC ${CMAKE_SOURCE_DIR}/Platform/${CMAKE_SYSTEM_NAME})
 set(PLATFORM_BIN ${CMAKE_BINARY_DIR}/Platform/${CMAKE_SYSTEM_NAME})
 
+set(EXTENSIONS_SRC ${CMAKE_SOURCE_DIR}/Extensions)
+set(EXTENSIONS_BIN ${CMAKE_BINARY_DIR}/Extensions)
+
 file(GLOB_RECURSE PLATFORM_SDK_SOURCES ${PLATFORM_SRC}/Source/*.cpp)
 list(APPEND SDK_SOURCES ${PLATFORM_SDK_SOURCES})
 list(APPEND SDK_SOURCES ${GENERATED_SOURCE})
@@ -19,6 +22,8 @@ set(PLATFORM_CONFIG "${PLATFORM_SRC}/Config.cmake")
 if (EXISTS "${PLATFORM_CONFIG}")
     include("${PLATFORM_CONFIG}")
 endif ()
+
+include("${EXTENSIONS_SRC}/Config.cmake")
 
 set(STAMP_FILE "${CMAKE_BINARY_DIR}/codegen.stamp")
 
@@ -46,6 +51,12 @@ set(OGS_LIBS
 add_subdirectory(
         ${PLATFORM_SRC}
         ${PLATFORM_BIN}
+)
+
+# Extensions
+add_subdirectory(
+        ${EXTENSIONS_SRC}
+        ${EXTENSIONS_BIN}
 )
 
 # Vendor

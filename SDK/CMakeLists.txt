@@ -24,6 +24,10 @@ if (NOT GEN_RESULT EQUAL 0)
     message(FATAL_ERROR "Code generation failed: ${GEN_RESULT}")
 endif()
 
+if (WIN32)
+    add_compile_definitions(NOMINMAX)
+endif ()
+
 add_subdirectory(Source)
 
 if (OGS_BUILD_TESTING_TOOL)

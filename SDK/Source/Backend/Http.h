@@ -12,11 +12,18 @@ namespace OGS::Backend
     {
     public:
         template <typename T>
-        static std::string GetUrlPath()
+        static std::string GetUrl()
         {
             static std::string UrlBase = GetUrlBase();
 
             return UrlBase + T::Endpoint;
+        }
+
+        static std::string GetUrl(const std::string& Path)
+        {
+            static std::string UrlBase = GetUrlBase();
+
+            return UrlBase + Path;
         }
 
     private:
