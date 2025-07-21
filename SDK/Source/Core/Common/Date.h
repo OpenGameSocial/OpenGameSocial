@@ -20,9 +20,8 @@ namespace OGS
     inline CDateTime Now()
     {
         using namespace date;
-        using namespace std::chrono;
 
-        const auto Zoned = make_zoned(current_zone(), system_clock::now());
+        const auto Zoned = make_zoned(std::chrono::current_zone(), UtcNow());
         return Zoned.get_sys_time();
     }
 }
