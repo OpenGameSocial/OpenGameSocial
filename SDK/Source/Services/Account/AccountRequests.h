@@ -9,7 +9,7 @@ namespace OGS::Services::Account
     class CAuthenticate
     {
     public:
-        static constexpr const char* Endpoint = "Authenticate";
+        static constexpr std::string_view Endpoint = "Authenticate";
 
         class CRequest
         {
@@ -31,6 +31,9 @@ namespace OGS::Services::Account
 
             SERIALIZABLE()
             std::string Token;
+
+            SERIALIZABLE()
+            std::string TokenType;
 
             SERIALIZE_METHODS(CResponse)
         };

@@ -8,11 +8,13 @@ namespace OGS::Http
     class Uri final
     {
     public:
+        Uri(std::string_view Uri);
+
         Uri(const std::string& Uri);
-        
+
         Uri() = default;
 
-        void Parse(const std::string& Uri);
+        void Parse(std::string_view Uri);
 
         [[nodiscard]] bool IsValid() const
         {
@@ -24,17 +26,17 @@ namespace OGS::Http
             return SourceUri;
         }
 
-        [[nodiscard]] std::string GetProtocol() const
+        [[nodiscard]] const std::string& GetProtocol() const
         {
             return Protocol;
         }
 
-        [[nodiscard]] std::string GetUserInfo() const
+        [[nodiscard]] const std::string& GetUserInfo() const
         {
             return UserInfo;
         }
 
-        [[nodiscard]] std::string GetHost() const
+        [[nodiscard]] const std::string& GetHost() const
         {
             return Host;
         }
@@ -44,17 +46,17 @@ namespace OGS::Http
             return Port;
         }
 
-        [[nodiscard]] std::string GetPath() const
+        [[nodiscard]] const std::string& GetPath() const
         {
             return Path;
         }
 
-        [[nodiscard]] std::string GetQuery() const
+        [[nodiscard]] const std::string& GetQuery() const
         {
             return Query;
         }
 
-        [[nodiscard]] std::string GetFragment() const
+        [[nodiscard]] const std::string& GetFragment() const
         {
             return Fragment;
         }

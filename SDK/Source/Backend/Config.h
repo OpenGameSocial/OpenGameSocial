@@ -6,6 +6,6 @@ namespace OGS::Backend
     struct CConfig
     {
     public:
-        static constexpr const char* BackendUrl = "http://localhost:5211/";
+        static constexpr std::string_view BackendUrl = "http://localhost:5211/";
     };
 }

@@ -21,7 +21,7 @@ namespace OGS
     {
         using namespace date;
 
-        const auto Zoned = make_zoned(std::chrono::current_zone(), UtcNow());
+        const auto Zoned = make_zoned(date::current_zone(), UtcNow());
         return Zoned.get_sys_time();
     }
 }

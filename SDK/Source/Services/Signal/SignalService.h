@@ -5,6 +5,8 @@
 #include "Services/ServiceContainer.h"
 #include "Services/Account/AccountService.h"
 #include "Services/Signal/Requests.h"
+#include "WebSocket/WebSocket.h"
+#include "WebSocket/WebSocketManager.h"
 
 
 namespace OGS::Services::Signal
@@ -22,7 +24,14 @@ namespace OGS::Services::Signal
         void Connect(const std::string& Room);
 
     private:
-        void OnNegotiationFinished(Http::THttpResponse<CNegotiate>&& HttpResponse);
-        void OnAuthenticationStatusChanged(Account::EAuthenticationStatus OldStatus, Account::EAuthenticationStatus NewStatus);
+        void OnWebSocketConnectionChanged(WebSocket::EConnectionState State);
+        void OnNegotiationFinished(Http::THttpResponse<CNegotiate>&& HttpResponse, const std::string& Room);
+        void OnAuthenticationStatusChanged(Account::EAuthenticationStatus OldStatus,
+                                           Account::EAuthenticationStatus NewStatus);
+
+        void SendHandshake();
+
+    private:
+        WebSocket::CWebSocketPtr WebSocket;
     };
 }

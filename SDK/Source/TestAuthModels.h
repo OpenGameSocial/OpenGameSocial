@@ -8,7 +8,7 @@
 class CTestAuth
 {
 public:
-    static constexpr const char* Endpoint = "TestAuth";
+    static constexpr std::string_view Endpoint = "TestAuth";
 
     class CRequest
     {};

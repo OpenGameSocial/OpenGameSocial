@@ -27,7 +27,7 @@ public:
 class CWeather
 {
 public:
-    static constexpr const char* Endpoint = "WeatherForecast";
+    static constexpr std::string_view Endpoint = "WeatherForecast";
 
     class CRequest
     {

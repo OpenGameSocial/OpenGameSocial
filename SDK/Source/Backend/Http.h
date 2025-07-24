@@ -14,9 +14,8 @@ namespace OGS::Backend
         template <typename T>
         static std::string GetUrl()
         {
-            static std::string UrlBase = GetUrlBase();
-
-            return UrlBase + T::Endpoint;
+            static std::string Url = GetUrlBase() + std::string(T::Endpoint);
+            return Url;
         }
 
         static std::string GetUrl(const std::string& Path)
@@ -29,7 +28,7 @@ namespace OGS::Backend
     private:
         static std::string GetUrlBase()
         {
-            std::string Result = CConfig::BackendUrl;
+            std::string Result(CConfig::BackendUrl);
 
             if (Result.ends_with('/'))
             {

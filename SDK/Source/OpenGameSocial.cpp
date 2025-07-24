@@ -10,6 +10,10 @@ static OGS::TLogCategory LogOpenGameSocial("LogOpenGameSocial");
 
 void OGS_Init(const OGS_Init_Options* Options)
 {
+#ifdef _DEBUG
+    setvbuf(stdout, nullptr, _IONBF, 0);
+#endif
+
     LogOpenGameSocial.Verbose("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
 
     RunAutoInit();

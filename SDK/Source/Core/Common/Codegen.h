@@ -48,6 +48,22 @@ public:
     virtual void Run() = 0;
 };
 
+class CFunctionAutoInitable final : public CAutoInitable
+{
+public:
+    explicit CFunctionAutoInitable(std::function<void()> InFunction) :
+    Function(std::move(InFunction))
+    {}
+
+    void Run() override
+    {
+        Function();
+    }
+
+private:
+    std::function<void()> Function;
+};
+
 class CAutoInit
 {
 public:

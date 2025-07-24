@@ -1,7 +1,9 @@
 #include "SignalService.h"
+
 #include "Requests.h"
 #include "Backend/Http.h"
 #include "Core/Http/Http.h"
+#include "WebSocket/WebSocket.h"
 
 namespace OGS::Services::Signal
 {
@@ -31,12 +33,20 @@ namespace OGS::Services::Signal
         Backend::CAuthenticatedMode::SetupRequest(*HttpRequest, CNegotiate::CRequest{});
 
         HttpRequest->OnComplete()
-                   .BindShared(AsShared(), &ThisClass::OnNegotiationFinished);
+                   .BindShared(AsShared(), &ThisClass::OnNegotiationFinished, Room);
 
         HttpRequest->Run();
     }
 
-    void CSignalService::OnNegotiationFinished(Http::THttpResponse<CNegotiate>&& HttpResponse)
+    void CSignalService::OnWebSocketConnectionChanged(WebSocket::EConnectionState State)
+    {
+        if (State == WebSocket::EConnectionState::Connected)
+        {
+            SendHandshake();
+        }
+    }
+
+    void CSignalService::OnNegotiationFinished(Http::THttpResponse<CNegotiate>&& HttpResponse, const std::string& Room)
     {
         auto ConnectionId = HttpResponse->ConnectionId;
 
@@ -45,7 +55,22 @@ namespace OGS::Services::Signal
             ConnectionId = HttpResponse->ConnectionToken.value();
         }
 
-        
+        auto Url = Backend::CBackendUrlProvider::GetUrl(Room);
+
+        constexpr std::string_view from = "http";
+        constexpr std::string_view to = "ws";
+
+        if (Url.starts_with(from))
+        {
+            Url.replace(0, from.length(), to);
+        }
+
+        const auto AccountService = CServiceContainer::GetService<Account::CAccountService>();
+
+        WebSocket = WebSocket::CWebSocketManager::Get().CreateSocket();
+        WebSocket->SetHeader("Authorization", AccountService->GetToken());
+        WebSocket->OnConnectionStateChanged.AddShared(AsShared(), &ThisClass::OnWebSocketConnectionChanged);
+        WebSocket->Connect(Url);
     }
 
     void CSignalService::OnAuthenticationStatusChanged(Account::EAuthenticationStatus OldStatus,
@@ -56,6 +81,13 @@ namespace OGS::Services::Signal
         {
             Connect("testHub");
         }
+    }
+
+    void CSignalService::SendHandshake()
+    {
+        static std::string Handshake = R"({"protocol":"json","version":1})";
+        const std::string Message = Handshake + '\x1e';
+        WebSocket->Send(Message);
     }
 }
 

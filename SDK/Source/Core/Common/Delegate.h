@@ -80,16 +80,16 @@ namespace OGS
             return Result;
         }
 
-        template <typename TOwner>
-        void BindShared(std::shared_ptr<TOwner> Owner, void (TOwner::*InMethod)(TArgs...))
+        template <typename TOwner, typename... TBoundArgs>
+        void BindShared(std::shared_ptr<TOwner> Owner, void (TOwner::*InMethod)(TArgs..., TBoundArgs...), TBoundArgs&& ... BoundArgs)
         {
             std::weak_ptr<TOwner> WeakOwner = std::weak_ptr<TOwner>(Owner);
 
-            Callable = [WeakOwner, InMethod](TArgs... Args)
+            Callable = [WeakOwner, InMethod, BoundArgs...](TArgs... Args)
             {
                 if (std::shared_ptr<TOwner> OwnerPtr = WeakOwner.lock())
                 {
-                    (OwnerPtr.get()->*InMethod)(std::forward<TArgs>(Args)...);
+                    (OwnerPtr.get()->*InMethod)(std::forward<TArgs>(Args)..., std::forward<TBoundArgs>(BoundArgs)...);
                     return true;
                 }
 

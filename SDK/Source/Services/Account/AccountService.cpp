@@ -57,7 +57,7 @@ namespace OGS::Services::Account
                 return;
             }
 
-            this->Token = Response->Token;
+            this->Token = Response->TokenType + " " + Response->Token;
             this->ValidUntil = Response->ValidUntil;
 
             auto Seconds = std::chrono::duration_cast<std::chrono::seconds>(ValidUntil - UtcNow());

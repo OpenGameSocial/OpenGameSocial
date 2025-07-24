@@ -1,14 +1,21 @@
 #include "Uri.h"
 
+#include <charconv>
+
 using namespace OGS::Http;
 
+
+Uri::Uri(std::string_view Uri)
+{
+    Parse(Uri);
+}
 
 Uri::Uri(const std::string& Uri)
 {
     Parse(Uri);
 }
 
-void Uri::Parse(const std::string& Uri)
+void Uri::Parse(std::string_view Uri)
 {
     Parsed = false;
 
@@ -27,7 +34,7 @@ void Uri::Parse(const std::string& Uri)
     size_t PathStart = Uri.find('/', AuthorityStart);
     size_t AuthorityEnd = (PathStart == std::string::npos) ? Uri.size() : PathStart;
 
-    std::string authority = Uri.substr(AuthorityStart, AuthorityEnd - AuthorityStart);
+    std::string_view authority = Uri.substr(AuthorityStart, AuthorityEnd - AuthorityStart);
     size_t at_pos = authority.find('@');
     if (at_pos != std::string::npos)
     {
@@ -39,7 +46,7 @@ void Uri::Parse(const std::string& Uri)
     if (ColonPos != std::string::npos)
     {
         Host = authority.substr(0, ColonPos);
-        Port = static_cast<uint16_t>(std::stoi(authority.substr(ColonPos + 1)));
+        std::from_chars(authority.data() + ColonPos + 1, authority.data() + authority.size(), Port);
     }
     else
     {
