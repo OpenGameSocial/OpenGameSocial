@@ -3,7 +3,7 @@
 #include "Requests.h"
 #include "Backend/Http.h"
 #include "Core/Http/Http.h"
-#include "WebSocket/WebSocket.h"
+#include "WebSocket/LWSWebSocket.h"
 
 namespace OGS::Services::Signal
 {

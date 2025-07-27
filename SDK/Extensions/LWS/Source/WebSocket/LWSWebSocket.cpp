@@ -1,4 +1,4 @@
-#include "WebSocket.h"
+#include "LWSWebSocket.h"
 
 #include <libwebsockets.h>
 
@@ -8,12 +8,12 @@
 
 static OGS::TLogCategory LogWebSocket("LogWebSocket");
 
-namespace OGS::WebSocket
+namespace OGS::LWS
 {
-    CWebSocket::~CWebSocket()
+    CLWSWebSocket::~CLWSWebSocket()
     {}
 
-    bool CWebSocket::Connect(std::string_view Url)
+    bool CLWSWebSocket::Connect(std::string_view Url)
     {
         if (Context == nullptr)
         {
@@ -55,19 +55,19 @@ namespace OGS::WebSocket
         }
 
         Connection = Client;
-        ConnectionState = EConnectionState::Connecting;
-        CWebSocketManager::Get().RegisterSocket(shared_from_this());
+        ConnectionState = WebSocket::EConnectionState::Connecting;
+        CLWSManager::Get().RegisterSocket(shared_from_this());
 
         LogWebSocket.Info("WebSocket connection initiated to %s", Url.data());
         return true;
     }
 
-    void CWebSocket::Close()
+    void CLWSWebSocket::Close()
     {
         CloseInternal();
     }
 
-    void CWebSocket::SetHeader(const std::string& Key, const std::string& Value)
+    void CLWSWebSocket::SetHeader(const std::string& Key, const std::string& Value)
     {
         auto KeyCopy = Key;
 
@@ -80,10 +80,10 @@ namespace OGS::WebSocket
         Headers.emplace(std::move(KeyCopy), Value);
     }
 
-    bool CWebSocket::Send(const std::string& Message) const
+    bool CLWSWebSocket::Send(const std::string& Message) const
     {
         if (Connection == nullptr ||
-            ConnectionState != EConnectionState::Connected)
+            ConnectionState != WebSocket::EConnectionState::Connected)
         {
             return false;
         }
@@ -96,12 +96,12 @@ namespace OGS::WebSocket
         return lws_write(Connection, &buffer[LWS_PRE], MessageLen, LWS_WRITE_TEXT) >= 0;
     }
 
-    CWebSocket::CWebSocket()
+    CLWSWebSocket::CLWSWebSocket()
     {
-        Context = CWebSocketManager::Get().Context;
+        Context = CLWSManager::Get().Context;
     }
 
-    int32_t CWebSocket::HandleCallback(lws_callback_reasons Reason, void* User, void* In, size_t Len)
+    int32_t CLWSWebSocket::HandleCallback(lws_callback_reasons Reason, void* User, void* In, size_t Len)
     {
         switch (Reason)
         {
@@ -127,8 +127,8 @@ namespace OGS::WebSocket
         break;
 
         case LWS_CALLBACK_CLIENT_ESTABLISHED:
-            ConnectionState = EConnectionState::Connected;
-            OnConnectionStateChanged.Broadcast(EConnectionState::Connected);
+            ConnectionState = WebSocket::EConnectionState::Connected;
+            OnConnectionStateChanged.Broadcast(WebSocket::EConnectionState::Connected);
             LogWebSocket.Info("WebSocket connection established");
             break;
 
@@ -173,14 +173,14 @@ namespace OGS::WebSocket
         return 0;
     }
 
-    void CWebSocket::CloseInternal(bool bDestroyed)
+    void CLWSWebSocket::CloseInternal(bool bDestroyed)
     {
         if (Connection == nullptr)
         {
             return;
         }
 
-        CWebSocketManager::Get().UnRegisterSocket(shared_from_this());
+        CLWSManager::Get().UnRegisterSocket(shared_from_this());
 
         if (!bDestroyed)
         {
@@ -188,7 +188,7 @@ namespace OGS::WebSocket
         }
 
         Connection = nullptr;
-        ConnectionState = EConnectionState::Disconnected;
+        ConnectionState = WebSocket::EConnectionState::Disconnected;
 
         OnConnectionStateChanged.Broadcast(ConnectionState);
     }

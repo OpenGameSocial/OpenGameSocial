@@ -1,9 +1,9 @@
-#include "WebSocketManager.h"
+#include "LWSManager.h"
 
 #include <libwebsockets.h>
 #include <ranges>
 
-#include "WebSocket.h"
+#include "LWSWebSocket.h"
 #include "Core/Common/Codegen.h"
 #include "Core/Logging/Logger.h"
 
@@ -11,7 +11,7 @@
 static OGS::TLogCategory LogWebSocketManager("LogWebSocketManager");
 static OGS::TLogCategory LogLWS("LogLWS");
 
-namespace OGS::WebSocket
+namespace OGS::LWS
 {
     class CProtocolProvider final
     {
@@ -19,13 +19,13 @@ namespace OGS::WebSocket
         static inline lws_protocols Protocols[] = {
             {
                 "ws",
-                CWebSocketManager::HandleCallback,
+                CLWSManager::HandleCallback,
                 0,
                 65536,
             },
             {
                 "wss",
-                CWebSocketManager::HandleCallback,
+                CLWSManager::HandleCallback,
                 0,
                 65536,
             },
@@ -53,13 +53,13 @@ namespace OGS::WebSocket
         }
     }
 
-    CWebSocketManager& CWebSocketManager::Get()
+    CLWSManager& CLWSManager::Get()
     {
-        static CWebSocketManager Instance;
+        static CLWSManager Instance;
         return Instance;
     }
 
-    void CWebSocketManager::Init()
+    void CLWSManager::Init()
     {
         if (Context != nullptr)
         {
@@ -84,7 +84,7 @@ namespace OGS::WebSocket
         LogWebSocketManager.Info("WebSocketManager initialized successfully");
     }
 
-    void CWebSocketManager::DeInit()
+    void CLWSManager::DeInit()
     {
         if (Context == nullptr)
         {
@@ -92,7 +92,7 @@ namespace OGS::WebSocket
         }
 
         // Close all active sockets
-        std::vector<CWebSocketPtr> ActiveSockets;
+        std::vector<CLWSWebSocketPtr> ActiveSockets;
 
         for (auto& WeakSocket : Sockets | std::views::values)
         {
@@ -115,7 +115,7 @@ namespace OGS::WebSocket
         LogWebSocketManager.Info("WebSocketManager deinitialized");
     }
 
-    CWebSocketPtr CWebSocketManager::CreateSocket()
+    CLWSWebSocketPtr CLWSManager::CreateSocket()
     {
         if (Context == nullptr)
         {
@@ -123,15 +123,15 @@ namespace OGS::WebSocket
             return nullptr;
         }
 
-        return CWebSocketPtr(new CWebSocket());
+        return CLWSWebSocketPtr(new CLWSWebSocket());
     }
 
-    CWebSocketManager::CWebSocketManager()
+    CLWSManager::CLWSManager()
     {
         lws_set_log_level(LLL_ERR | LLL_WARN | LLL_NOTICE | LLL_INFO | LLL_DEBUG | LLL_HEADER | LLL_EXT | LLL_CLIENT | LLL_LATENCY | LLL_USER, LwsLogCallback);
     }
 
-    void CWebSocketManager::Tick(double ElapsedSeconds)
+    void CLWSManager::Tick(double ElapsedSeconds)
     {
         if (Context == nullptr)
         {
@@ -143,7 +143,7 @@ namespace OGS::WebSocket
         CleanupDeadSockets();
     }
 
-    void CWebSocketManager::CleanupDeadSockets()
+    void CLWSManager::CleanupDeadSockets()
     {
         auto Iterator = Sockets.begin();
 
@@ -159,7 +159,7 @@ namespace OGS::WebSocket
         }
     }
 
-    void CWebSocketManager::RegisterSocket(const CWebSocketPtr& Socket)
+    void CLWSManager::RegisterSocket(const CLWSWebSocketPtr& Socket)
     {
         if (Socket->Connection == nullptr)
         {
@@ -169,12 +169,12 @@ namespace OGS::WebSocket
         Sockets[Socket->Connection] = Socket;
     }
 
-    void CWebSocketManager::UnRegisterSocket(const CWebSocketPtr& Socket)
+    void CLWSManager::UnRegisterSocket(const CLWSWebSocketPtr& Socket)
     {
         Sockets.erase(Socket->Connection);
     }
 
-    int32_t CWebSocketManager::HandleCallback(lws* Client, lws_callback_reasons Reason, void* User, void* In,
+    int32_t CLWSManager::HandleCallback(lws* Client, lws_callback_reasons Reason, void* User, void* In,
                                               size_t Len)
     {
         auto& Mgr = Get();
@@ -199,5 +199,5 @@ namespace OGS::WebSocket
 
 CAutoInit WebSocketManagerAutoInit(new CFunctionAutoInitable([]
 {
-    OGS::WebSocket::CWebSocketManager::Get().Init();
+    OGS::LWS::CLWSManager::Get().Init();
 }));

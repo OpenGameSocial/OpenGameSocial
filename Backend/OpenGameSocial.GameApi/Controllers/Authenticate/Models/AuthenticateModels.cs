@@ -9,5 +9,6 @@ public class AuthenticateRequest
 public class AuthenticateResponse
 {
     public required string Token { get; init; }
+    public required string TokenType { get; init; }
     public required DateTime ValidUntil { get; init; }
 }

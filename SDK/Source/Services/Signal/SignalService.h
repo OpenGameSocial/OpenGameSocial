@@ -6,7 +6,6 @@
 #include "Services/Account/AccountService.h"
 #include "Services/Signal/Requests.h"
 #include "WebSocket/WebSocket.h"
-#include "WebSocket/WebSocketManager.h"
 
 
 namespace OGS::Services::Signal

@@ -42,7 +42,6 @@ add_library(SDK ${SDK_TYPE} ${SDK_SOURCES})
 add_dependencies(SDK GenerateSources)
 
 set(OGS_LIBS
-        mbedtls
         nlohmannjson
         date
 )

@@ -18,9 +18,12 @@ internal static class Program
 
         var mainSourcesDir = Path.Combine(root, sourceDir);
         var platformSourcesDir = Path.Combine(root, "Platform", platform);
+        var extensionsDir = Path.Combine(root, "Extensions");
 
         var files = CollectSources(mainSourcesDir, "*.cpp", []);
         files = CollectSources(mainSourcesDir, "*.h", files);
+        files = CollectSources(extensionsDir, "*.cpp", files);
+        files = CollectSources(extensionsDir, "*.h", files);
         var platformFiles = CollectSources(platformSourcesDir, "*.cpp", []);
         platformFiles = CollectSources(platformSourcesDir, "*.h", platformFiles);
 

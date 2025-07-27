@@ -10,29 +10,29 @@ struct lws;
 struct lws_context;
 enum lws_callback_reasons : int32_t;
 
-namespace OGS::WebSocket
+namespace OGS::LWS
 {
-    class CWebSocket;
-    using CWebSocketPtr = std::shared_ptr<CWebSocket>;
+    class CLWSWebSocket;
+    using CLWSWebSocketPtr = std::shared_ptr<CLWSWebSocket>;
 
-    class CWebSocketManager : public CTicker
+    class CLWSManager : public CTicker
     {
     public:
-        static CWebSocketManager& Get();
+        static CLWSManager& Get();
 
         void Init();
         void DeInit();
 
-        CWebSocketPtr CreateSocket();
+        CLWSWebSocketPtr CreateSocket();
 
     private:
-        CWebSocketManager();
+        CLWSManager();
 
         void Tick(double ElapsedSeconds) override;
         void CleanupDeadSockets();
 
-        void RegisterSocket(const CWebSocketPtr& Socket);
-        void UnRegisterSocket(const CWebSocketPtr& Socket);
+        void RegisterSocket(const CLWSWebSocketPtr& Socket);
+        void UnRegisterSocket(const CLWSWebSocketPtr& Socket);
 
     private:
         static int32_t HandleCallback(lws* Client, lws_callback_reasons Reason,
@@ -40,9 +40,9 @@ namespace OGS::WebSocket
 
     private:
         lws_context* Context{nullptr};
-        std::unordered_map<lws*, std::weak_ptr<CWebSocket>> Sockets;
+        std::unordered_map<lws*, std::weak_ptr<CLWSWebSocket>> Sockets;
 
-        friend class CWebSocket;
+        friend class CLWSWebSocket;
         friend class CProtocolProvider;
     };
 }
