@@ -15,17 +15,24 @@ namespace OGS::LWS
 {
     class CProtocolProvider final
     {
+    private:
+        static int32_t HandleCallback(lws* Client, lws_callback_reasons Reason, void* User, void* In,
+                                              size_t Len)
+        {
+            return CLWSManager::Get().HandleCallback(Client, Reason, User, In, Len);
+        }
+
     public:
         static inline lws_protocols Protocols[] = {
             {
                 "ws",
-                CLWSManager::HandleCallback,
+                HandleCallback,
                 0,
                 65536,
             },
             {
                 "wss",
-                CLWSManager::HandleCallback,
+                HandleCallback,
                 0,
                 65536,
             },
@@ -35,20 +42,27 @@ namespace OGS::LWS
 
     static void LwsLogCallback(int level, const char* line)
     {
+        std::string_view LineView(line);
+
+        while (LineView.ends_with('\n') || LineView.ends_with('\r'))
+        {
+            LineView.remove_suffix(1);
+        }
+
         switch (level)
         {
         case LLL_ERR:
-            LogLWS.Error("%s", line);
+            LogLWS.Error(LineView);
             break;
         case LLL_WARN:
-            LogLWS.Warning("%s", line);
+            LogLWS.Warning(LineView);
             break;
         case LLL_NOTICE:
         case LLL_DEBUG:
-            LogLWS.Verbose("%s", line);
+            LogLWS.Verbose(LineView);
             break;
         case LLL_INFO:
-            LogLWS.Info("%s", line);
+            LogLWS.Info(LineView);
             break;
         }
     }
@@ -174,14 +188,12 @@ namespace OGS::LWS
         Sockets.erase(Socket->Connection);
     }
 
-    int32_t CLWSManager::HandleCallback(lws* Client, lws_callback_reasons Reason, void* User, void* In,
+    int32_t CLWSManager::HandleCallback(lws* Client, int32_t Reason, void* User, void* In,
                                               size_t Len)
     {
-        auto& Mgr = Get();
+        const auto Iterator = Sockets.find(Client);
 
-        const auto Iterator = Mgr.Sockets.find(Client);
-
-        if (Iterator == Mgr.Sockets.end())
+        if (Iterator == Sockets.end())
         {
             return 0;
         }
@@ -189,7 +201,7 @@ namespace OGS::LWS
         const auto Socket = Iterator->second.lock();
         if (!Socket)
         {
-            Mgr.Sockets.erase(Iterator);
+            Sockets.erase(Iterator);
             return 0;
         }
 

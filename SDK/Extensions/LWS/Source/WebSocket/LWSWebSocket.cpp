@@ -24,7 +24,7 @@ namespace OGS::LWS
 
         if (!Uri.IsValid())
         {
-            LogWebSocket.Error("Failed to parse WebSocket URL: %s", Url.data());
+            LogWebSocket.Error("Failed to parse WebSocket URL: [{}]", Url);
             return false;
         }
 
@@ -50,7 +50,7 @@ namespace OGS::LWS
         lws* Client = lws_client_connect_via_info(&connect_info);
         if (!Client)
         {
-            LogWebSocket.Error("Failed to initiate WebSocket connection to %s", Url.data());
+            LogWebSocket.Error("Failed to initiate WebSocket connection to [{}]", Url);
             return false;
         }
 
@@ -58,7 +58,7 @@ namespace OGS::LWS
         ConnectionState = WebSocket::EConnectionState::Connecting;
         CLWSManager::Get().RegisterSocket(shared_from_this());
 
-        LogWebSocket.Info("WebSocket connection initiated to %s", Url.data());
+        LogWebSocket.Info("WebSocket connection initiated to [{}]", Url);
         return true;
     }
 
@@ -101,7 +101,7 @@ namespace OGS::LWS
         Context = CLWSManager::Get().Context;
     }
 
-    int32_t CLWSWebSocket::HandleCallback(lws_callback_reasons Reason, void* User, void* In, size_t Len)
+    int32_t CLWSWebSocket::HandleCallback(int32_t Reason, void* User, void* In, size_t Len)
     {
         switch (Reason)
         {
@@ -122,7 +122,7 @@ namespace OGS::LWS
                 Error = std::string(static_cast<char*>(In), Len);
             }
 
-            LogWebSocket.Error("WebSocket connection error: [%s]", Error.c_str());
+            LogWebSocket.Error("WebSocket connection error: [{}]", Error);
         }
         break;
 
@@ -158,7 +158,7 @@ namespace OGS::LWS
                                                 Data, DataEnd))
                 {
                     CloseInternal();
-                    LogWebSocket.Error("Failed to add [%s] header", Key.c_str());
+                    LogWebSocket.Error("Failed to add [{}] header", Key);
                     return -1;
                 }
             }
@@ -167,7 +167,7 @@ namespace OGS::LWS
         }
 
         default:
-            LogWebSocket.Verbose("Unhandled WebSocket callback: %d", Reason);
+            LogWebSocket.Verbose("Unhandled WebSocket callback: {}", Reason);
         }
 
         return 0;

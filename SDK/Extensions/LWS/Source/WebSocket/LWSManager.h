@@ -8,7 +8,6 @@
 
 struct lws;
 struct lws_context;
-enum lws_callback_reasons : int32_t;
 
 namespace OGS::LWS
 {
@@ -35,7 +34,7 @@ namespace OGS::LWS
         void UnRegisterSocket(const CLWSWebSocketPtr& Socket);
 
     private:
-        static int32_t HandleCallback(lws* Client, lws_callback_reasons Reason,
+        int32_t HandleCallback(lws* Client, int32_t Reason,
                                       void* User, void* In, size_t Len);
 
     private:

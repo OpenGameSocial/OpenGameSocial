@@ -60,14 +60,14 @@ namespace OGS::Services::Account
             this->Token = Response->TokenType + " " + Response->Token;
             this->ValidUntil = Response->ValidUntil;
 
-            auto Seconds = std::chrono::duration_cast<std::chrono::seconds>(ValidUntil - UtcNow());
-            LogAccountService.Verbose("Authenticated successfully. Token valid for %ld seconds.", Seconds.count());
+            const auto Seconds = std::chrono::duration_cast<std::chrono::seconds>(ValidUntil - UtcNow());
+            LogAccountService.Verbose("Authenticated successfully. Token valid for [{}] seconds.", Seconds.count());
 
             ChangeStatus(EAuthenticationStatus::Authenticated);
             Callback.Execute(reinterpret_cast<OGS_TitleAccount>(1), EAuthenticationStatus::Authenticated);
         };
 
-        LogAccountService.Verbose("Started authentication using %s provider.", Provider.c_str());
+        LogAccountService.Verbose("Started authentication using [{}] provider.", Provider);
 
         Http::Post<CAuthenticate, CBackendUrlProvider, CAuthenticatedMode>({
             .Provider = Provider,

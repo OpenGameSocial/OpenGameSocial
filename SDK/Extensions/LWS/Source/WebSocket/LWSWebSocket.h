@@ -34,7 +34,7 @@ namespace OGS::LWS
     private:
         CLWSWebSocket();
 
-        int32_t HandleCallback(lws_callback_reasons Reason, void* User, void* In, size_t Len);
+        int32_t HandleCallback(int32_t Reason, void* User, void* In, size_t Len);
 
         void CloseInternal(bool bDestroyed = false);
 

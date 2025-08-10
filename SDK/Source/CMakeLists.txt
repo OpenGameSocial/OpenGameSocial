@@ -44,6 +44,7 @@ add_dependencies(SDK GenerateSources)
 set(OGS_LIBS
         nlohmannjson
         date
+        libfmt
 )
 
 # Platform

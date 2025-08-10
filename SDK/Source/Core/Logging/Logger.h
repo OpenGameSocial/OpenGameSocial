@@ -1,10 +1,10 @@
 #pragma once
 
 #include <string>
+#include <fmt/format.h>
 
 #include "Core/Common/Containers/NonBlockingQueue.h"
 #include "OpenGameSocial.h"
-#include "Core/Common/StringUtils.h"
 
 
 namespace OGS
@@ -84,7 +84,7 @@ namespace OGS
                 return;
             }
 
-            auto LogString = Printf(Format, std::forward<TArgs>(Args)...);
+            auto LogString = fmt::vformat(Format, fmt::make_format_args(Args...));
 
             Log(LogString);
         }
@@ -106,29 +106,36 @@ namespace OGS
         bool bThreadSafe = false;
     };
 
-#define FORWARD_LOG_LEVEL(Level)                                   \
-    template <typename ... TArgs>                                  \
-    void Level(const char* Format, TArgs&& ... Args)               \
-    {                                                              \
-        Log<OGS_##Level>(Format, std::forward<TArgs>(Args) ...);   \
+#define FORWARD_LOG_LEVEL(Level)                                                     \
+    template <typename ... TArgs>                                                    \
+    void Level(std::string_view Format, TArgs&& ... Args)                            \
+    {                                                                                \
+        Log<OGS_##Level>(Format, std::forward<TArgs>(Args) ...);                     \
+    }                                                                                \
+    template <typename ... TArgs>                                                    \
+    void Level(const char* Format, TArgs&& ... Args)                                 \
+    {                                                                                \
+        Log<OGS_##Level>(std::string_view(Format), std::forward<TArgs>(Args) ...);   \
     }
 
     template <OGS_ELogLevel MinCompileLevel = OGS_Verbose, OGS_ELogLevel MaxCompileLevel = OGS_Critical>
     class TLogCategory final
     {
     public:
-        explicit TLogCategory(const char* InCategoryName) : CategoryName
-            (InCategoryName)
-        {
-        }
+        explicit TLogCategory(const std::string_view InCategoryName) :
+            CategoryName(InCategoryName)
+        {}
 
         template <OGS_ELogLevel Level, typename... TArgs>
-        void Log(const char* Format, TArgs&&... Args)
+        void Log(std::string_view Format, TArgs&&... Args)
         {
             if constexpr (MinCompileLevel <= Level && MaxCompileLevel >= Level)
             {
-                auto FormattedString = Printf(Format, std::forward<TArgs>(Args)...);
-                auto LogString = Printf("%s: [%s] %s", CategoryName, LevelToString(Level), FormattedString.c_str());
+                std::string_view LogLevelStr(LevelToString(Level));
+                std::string FormattedString = fmt::vformat(Format, fmt::make_format_args(Args...));
+                auto LogString = fmt::format("{}: [{}] {}", CategoryName,
+                                             LogLevelStr,
+                                             FormattedString);
 
                 CLogger::Get().Log(Level, LogString);
             }
@@ -141,7 +148,7 @@ namespace OGS
         FORWARD_LOG_LEVEL(Critical)
 
     private:
-        const char* CategoryName;
+        std::string CategoryName;
     };
 
 #undef FORWARD_LOG_LEVEL

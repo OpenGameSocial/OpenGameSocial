@@ -43,20 +43,6 @@
     #define DEBUG_BREAK __builtin_debugtrap
 #endif
 
-#ifdef PLATFORM_WINDOWS
-    #define SSCANF(buffer, format, ...) sscanf_s(buffer, format, __VA_ARGS__)
-    #define SNPRINTF(buffer, size, format, ...) _snprintf_s(buffer, size, _TRUNCATE, format, __VA_ARGS__)
-#else
-    #define SSCANF(buffer, format, ...) sscanf(buffer, format, __VA_ARGS__)
-    #define SNPRINTF(buffer, size, format, ...) snprintf(buffer, size, format, __VA_ARGS__)
-#endif
-
-#ifdef PLATFORM_WINDOWS
-    #define SCPRINTF(format, ...) _scprintf(format, __VA_ARGS__)
-#else
-    #define SCPRINTF(format, ...) SNPRINTF(nullptr, 0, format, __VA_ARGS__)
-#endif
-
 #define CHECK(expr)
 
 #define INVALID_SUBSCRIPTION_ID (0xFFFFFFFFFFFFFFFF)

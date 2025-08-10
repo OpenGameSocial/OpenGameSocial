@@ -14,7 +14,7 @@ void OGS_Init(const OGS_Init_Options* Options)
     setvbuf(stdout, nullptr, _IONBF, 0);
 #endif
 
-    LogOpenGameSocial.Verbose("Initializing OpenGameSocial: %i", Options->ThreadPoolSize);
+    LogOpenGameSocial.Verbose("Initializing OpenGameSocial: [{}]", Options->ThreadPoolSize);
 
     RunAutoInit();
 
