@@ -4,6 +4,8 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Configurations>Azure InProcess Debug;Web API Release;Web API Debug;Azure InProcess Release;Azure Isolated Debug;Azure Isolated Release;WebAPI Debug;WebAPI Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>

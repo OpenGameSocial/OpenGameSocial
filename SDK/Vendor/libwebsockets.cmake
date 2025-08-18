@@ -1,9 +1,10 @@
 include(FetchContent)
+include(CheckFunctionExists)
 
 FetchContent_Declare(
         libwebsockets
         GIT_REPOSITORY https://github.com/warmcat/libwebsockets.git
-        GIT_TAG v4.3.5
+        GIT_TAG v4.4.1
 )
 
 set(LWS_WITH_MBEDTLS ON CACHE BOOL "" FORCE)
@@ -31,23 +32,19 @@ else ()
     set(MBEDCRYPTO_LIBRARY "${mbedtls_BINARY_DIR}/library/libmbedcrypto.a" CACHE FILEPATH "" FORCE)
 endif ()
 
-FetchContent_MakeAvailable(libwebsockets)
+set(CMAKE_REQUIRED_INCLUDES
+        "${MBEDTLS_INCLUDE_DIRS}"
+)
+set(CMAKE_REQUIRED_LIBRARIES
+        "${MBEDTLS_LIBRARY}"
+        "${MBEDX509_LIBRARY}"
+        "${MBEDCRYPTO_LIBRARY}"
+        ${MBEDTLS_SYSTEM_LIBS}
+)
 
-if (NOT APPLE)
-#    target_compile_definitions(websockets PUBLIC LWS_HAVE_MBEDTLS_AUTH_KEY_ID)
-#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_conf_alpn_protocols)
-#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_get_alpn_protocol)
-#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_conf_sni)
-#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_set_hs_ca_chain)
-#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_set_hs_own_cert)
-#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_set_hs_authmode)
-#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_net_init)
-#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_x509_crt_parse_file) # some embedded may lack filesystem
-#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_md_setup) # not on xenial 2.2
-#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_rsa_complete) # not on xenial 2.2
-#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_internal_aes_encrypt)
-#    target_compile_definitions(websockets PUBLIC LWS_HAVE_mbedtls_ssl_set_verify)
-endif ()
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+
+FetchContent_MakeAvailable(libwebsockets)
 
 set_property(TARGET websockets PROPERTY INTERFACE_INCLUDE_DIRECTORIES "")
 
