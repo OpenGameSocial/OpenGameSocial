@@ -45,6 +45,7 @@ set(OGS_LIBS
         nlohmannjson
         date
         libfmt
+        opus
 )
 
 # Platform
