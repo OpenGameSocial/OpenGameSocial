@@ -1,20 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
-        <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
         <Configurations>WebAPI Release;WebAPI Debug;Azure InProcess Debug;Azure InProcess Release;Azure Isolated Debug;Azure Isolated Release</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3"/>
-        <PackageReference Include="Scalar.AspNetCore" Version="2.2.7" />
+      <ProjectReference Include="../../OpenGameSocial.Core/OpenGameSocial.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OpenGameSocial\OpenGameSocial.csproj" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3"/>
+        <PackageReference Include="Scalar.AspNetCore" Version="2.2.7" />
     </ItemGroup>
 
 </Project>

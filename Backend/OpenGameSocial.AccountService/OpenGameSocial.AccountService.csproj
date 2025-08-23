@@ -4,7 +4,38 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
+        <Configurations>WebAPI Release;WebAPI Debug;Azure InProcess Debug;Azure InProcess Release;Azure Isolated Debug;Azure Isolated Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
         <Nullable>enable</Nullable>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     </PropertyGroup>
+
+    <PropertyGroup Condition=" $([System.String]::Copy('$(Configuration)').Contains('Debug')) ">
+        <DefineConstants>TRACE;DEBUG</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" $([System.String]::Copy('$(Configuration)').Contains('Release')) ">
+        <Optimize>true</Optimize>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\OpenGameSocial.CodeGen\OpenGameSocial.CodeGen.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"/>
+        <ProjectReference Include="..\Adapters\OpenGameSocial.VendorAdapter\OpenGameSocial.VendorAdapter.csproj"/>
+        <ProjectReference Include="..\OpenGameSocial\OpenGameSocial.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="appsettings.Development.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="plugins.list">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 
 </Project>

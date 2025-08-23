@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGameSocial", "OpenGameS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGameSocial.Core", "OpenGameSocial.Core\OpenGameSocial.Core.csproj", "{B1C59403-06A7-48D1-B0F3-A640A80D0DA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGameSocial.GameApi", "OpenGameSocial.GameApi\OpenGameSocial.GameApi.csproj", "{10E5220C-276F-4E52-9E78-7F7709F45C31}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGameSocial.Abstractions", "OpenGameSocial.Abstractions\OpenGameSocial.Abstractions.csproj", "{E28DBC18-7F50-4C5B-A86F-EE19CB4B5A37}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{772A86FC-B6A5-4104-8E4F-0D17F679EDE1}"
@@ -16,7 +14,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGameSocial.AccountServi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{E0DF2652-5348-451A-BA1D-D521FF5AF840}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGameSocial.CodeGen", "OpenGameSocial.CodeGen\OpenGameSocial.CodeGen.csproj", "{3244EB62-A8AA-495E-859E-0A4F121287AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGameSocial.CodeGen", "OpenGameSocial.CodeGen\OpenGameSocial.CodeGen.csproj", "{E033D222-17F2-4344-ABA1-FD03E9070858}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGameSocial.MongoDB", "Plugins\OpenGameSocial.MongoDB\OpenGameSocial.MongoDB.csproj", "{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGameSocial.VendorAdapter", "Adapters\OpenGameSocial.VendorAdapter\OpenGameSocial.VendorAdapter.csproj", "{B25D309F-BEB6-405E-8580-FF899A288133}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenGameSocial.WebApi", "Adapters\OpenGameSocial.WebApi\OpenGameSocial.WebApi.csproj", "{0EA550F9-F645-4A14-9007-2C90CF58D775}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,44 +68,71 @@ Global
 		{B1C59403-06A7-48D1-B0F3-A640A80D0DA6}.Azure Isolated Debug|Any CPU.Build.0 = Azure Isolated Debug|Any CPU
 		{B1C59403-06A7-48D1-B0F3-A640A80D0DA6}.Azure Isolated Release|Any CPU.ActiveCfg = Azure Isolated Release|Any CPU
 		{B1C59403-06A7-48D1-B0F3-A640A80D0DA6}.Azure Isolated Release|Any CPU.Build.0 = Azure Isolated Release|Any CPU
-		{10E5220C-276F-4E52-9E78-7F7709F45C31}.WebAPI Release|Any CPU.ActiveCfg = WebAPI Release|Any CPU
-		{10E5220C-276F-4E52-9E78-7F7709F45C31}.WebAPI Release|Any CPU.Build.0 = WebAPI Release|Any CPU
-		{10E5220C-276F-4E52-9E78-7F7709F45C31}.WebAPI Debug|Any CPU.ActiveCfg = WebAPI Debug|Any CPU
-		{10E5220C-276F-4E52-9E78-7F7709F45C31}.WebAPI Debug|Any CPU.Build.0 = WebAPI Debug|Any CPU
-		{10E5220C-276F-4E52-9E78-7F7709F45C31}.Azure InProcess Debug|Any CPU.ActiveCfg = Azure InProcess Debug|Any CPU
-		{10E5220C-276F-4E52-9E78-7F7709F45C31}.Azure InProcess Debug|Any CPU.Build.0 = Azure InProcess Debug|Any CPU
-		{10E5220C-276F-4E52-9E78-7F7709F45C31}.Azure InProcess Release|Any CPU.ActiveCfg = Azure InProcess Release|Any CPU
-		{10E5220C-276F-4E52-9E78-7F7709F45C31}.Azure InProcess Release|Any CPU.Build.0 = Azure InProcess Release|Any CPU
-		{10E5220C-276F-4E52-9E78-7F7709F45C31}.Azure Isolated Debug|Any CPU.ActiveCfg = Azure Isolated Debug|Any CPU
-		{10E5220C-276F-4E52-9E78-7F7709F45C31}.Azure Isolated Debug|Any CPU.Build.0 = Azure Isolated Debug|Any CPU
-		{10E5220C-276F-4E52-9E78-7F7709F45C31}.Azure Isolated Release|Any CPU.ActiveCfg = Azure Isolated Release|Any CPU
-		{10E5220C-276F-4E52-9E78-7F7709F45C31}.Azure Isolated Release|Any CPU.Build.0 = Azure Isolated Release|Any CPU
-		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.WebAPI Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.WebAPI Release|Any CPU.Build.0 = Debug|Any CPU
-		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.WebAPI Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.WebAPI Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure InProcess Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure InProcess Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure InProcess Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure InProcess Release|Any CPU.Build.0 = Debug|Any CPU
-		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure Isolated Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure Isolated Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure Isolated Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure Isolated Release|Any CPU.Build.0 = Debug|Any CPU
-		{3244EB62-A8AA-495E-859E-0A4F121287AB}.WebAPI Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{3244EB62-A8AA-495E-859E-0A4F121287AB}.WebAPI Release|Any CPU.Build.0 = Debug|Any CPU
-		{3244EB62-A8AA-495E-859E-0A4F121287AB}.WebAPI Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3244EB62-A8AA-495E-859E-0A4F121287AB}.WebAPI Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3244EB62-A8AA-495E-859E-0A4F121287AB}.Azure InProcess Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3244EB62-A8AA-495E-859E-0A4F121287AB}.Azure InProcess Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3244EB62-A8AA-495E-859E-0A4F121287AB}.Azure InProcess Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{3244EB62-A8AA-495E-859E-0A4F121287AB}.Azure InProcess Release|Any CPU.Build.0 = Debug|Any CPU
-		{3244EB62-A8AA-495E-859E-0A4F121287AB}.Azure Isolated Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3244EB62-A8AA-495E-859E-0A4F121287AB}.Azure Isolated Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3244EB62-A8AA-495E-859E-0A4F121287AB}.Azure Isolated Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{3244EB62-A8AA-495E-859E-0A4F121287AB}.Azure Isolated Release|Any CPU.Build.0 = Debug|Any CPU
+		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.WebAPI Release|Any CPU.ActiveCfg = WebAPI Release|Any CPU
+		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.WebAPI Release|Any CPU.Build.0 = WebAPI Release|Any CPU
+		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.WebAPI Debug|Any CPU.ActiveCfg = WebAPI Debug|Any CPU
+		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.WebAPI Debug|Any CPU.Build.0 = WebAPI Debug|Any CPU
+		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure InProcess Debug|Any CPU.ActiveCfg = Azure InProcess Debug|Any CPU
+		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure InProcess Debug|Any CPU.Build.0 = Azure InProcess Debug|Any CPU
+		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure InProcess Release|Any CPU.ActiveCfg = Azure InProcess Release|Any CPU
+		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure InProcess Release|Any CPU.Build.0 = Azure InProcess Release|Any CPU
+		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure Isolated Debug|Any CPU.ActiveCfg = Azure Isolated Debug|Any CPU
+		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure Isolated Debug|Any CPU.Build.0 = Azure Isolated Debug|Any CPU
+		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure Isolated Release|Any CPU.ActiveCfg = Azure Isolated Release|Any CPU
+		{F199E402-30DD-4396-A48F-8B0E0BF739A8}.Azure Isolated Release|Any CPU.Build.0 = Azure Isolated Release|Any CPU
+		{E033D222-17F2-4344-ABA1-FD03E9070858}.WebAPI Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{E033D222-17F2-4344-ABA1-FD03E9070858}.WebAPI Release|Any CPU.Build.0 = Debug|Any CPU
+		{E033D222-17F2-4344-ABA1-FD03E9070858}.WebAPI Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E033D222-17F2-4344-ABA1-FD03E9070858}.WebAPI Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E033D222-17F2-4344-ABA1-FD03E9070858}.Azure InProcess Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E033D222-17F2-4344-ABA1-FD03E9070858}.Azure InProcess Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E033D222-17F2-4344-ABA1-FD03E9070858}.Azure InProcess Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{E033D222-17F2-4344-ABA1-FD03E9070858}.Azure InProcess Release|Any CPU.Build.0 = Debug|Any CPU
+		{E033D222-17F2-4344-ABA1-FD03E9070858}.Azure Isolated Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E033D222-17F2-4344-ABA1-FD03E9070858}.Azure Isolated Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E033D222-17F2-4344-ABA1-FD03E9070858}.Azure Isolated Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{E033D222-17F2-4344-ABA1-FD03E9070858}.Azure Isolated Release|Any CPU.Build.0 = Debug|Any CPU
+		{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290}.WebAPI Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290}.WebAPI Release|Any CPU.Build.0 = Debug|Any CPU
+		{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290}.WebAPI Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290}.WebAPI Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290}.Azure InProcess Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290}.Azure InProcess Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290}.Azure InProcess Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290}.Azure InProcess Release|Any CPU.Build.0 = Debug|Any CPU
+		{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290}.Azure Isolated Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290}.Azure Isolated Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290}.Azure Isolated Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290}.Azure Isolated Release|Any CPU.Build.0 = Debug|Any CPU
+		{B25D309F-BEB6-405E-8580-FF899A288133}.WebAPI Release|Any CPU.ActiveCfg = WebAPI Release|Any CPU
+		{B25D309F-BEB6-405E-8580-FF899A288133}.WebAPI Release|Any CPU.Build.0 = WebAPI Release|Any CPU
+		{B25D309F-BEB6-405E-8580-FF899A288133}.WebAPI Debug|Any CPU.ActiveCfg = WebAPI Debug|Any CPU
+		{B25D309F-BEB6-405E-8580-FF899A288133}.WebAPI Debug|Any CPU.Build.0 = WebAPI Debug|Any CPU
+		{B25D309F-BEB6-405E-8580-FF899A288133}.Azure InProcess Debug|Any CPU.ActiveCfg = Azure InProcess Debug|Any CPU
+		{B25D309F-BEB6-405E-8580-FF899A288133}.Azure InProcess Debug|Any CPU.Build.0 = Azure InProcess Debug|Any CPU
+		{B25D309F-BEB6-405E-8580-FF899A288133}.Azure InProcess Release|Any CPU.ActiveCfg = Azure InProcess Release|Any CPU
+		{B25D309F-BEB6-405E-8580-FF899A288133}.Azure InProcess Release|Any CPU.Build.0 = Azure InProcess Release|Any CPU
+		{B25D309F-BEB6-405E-8580-FF899A288133}.Azure Isolated Debug|Any CPU.ActiveCfg = Azure Isolated Debug|Any CPU
+		{B25D309F-BEB6-405E-8580-FF899A288133}.Azure Isolated Debug|Any CPU.Build.0 = Azure Isolated Debug|Any CPU
+		{B25D309F-BEB6-405E-8580-FF899A288133}.Azure Isolated Release|Any CPU.ActiveCfg = Azure Isolated Release|Any CPU
+		{B25D309F-BEB6-405E-8580-FF899A288133}.Azure Isolated Release|Any CPU.Build.0 = Azure Isolated Release|Any CPU
+		{0EA550F9-F645-4A14-9007-2C90CF58D775}.WebAPI Release|Any CPU.ActiveCfg = WebAPI Release|Any CPU
+		{0EA550F9-F645-4A14-9007-2C90CF58D775}.WebAPI Release|Any CPU.Build.0 = WebAPI Release|Any CPU
+		{0EA550F9-F645-4A14-9007-2C90CF58D775}.WebAPI Debug|Any CPU.ActiveCfg = WebAPI Debug|Any CPU
+		{0EA550F9-F645-4A14-9007-2C90CF58D775}.WebAPI Debug|Any CPU.Build.0 = WebAPI Debug|Any CPU
+		{0EA550F9-F645-4A14-9007-2C90CF58D775}.Azure InProcess Debug|Any CPU.ActiveCfg = Azure InProcess Debug|Any CPU
+		{0EA550F9-F645-4A14-9007-2C90CF58D775}.Azure InProcess Debug|Any CPU.Build.0 = Azure InProcess Debug|Any CPU
+		{0EA550F9-F645-4A14-9007-2C90CF58D775}.Azure InProcess Release|Any CPU.ActiveCfg = Azure InProcess Release|Any CPU
+		{0EA550F9-F645-4A14-9007-2C90CF58D775}.Azure InProcess Release|Any CPU.Build.0 = Azure InProcess Release|Any CPU
+		{0EA550F9-F645-4A14-9007-2C90CF58D775}.Azure Isolated Debug|Any CPU.ActiveCfg = Azure Isolated Debug|Any CPU
+		{0EA550F9-F645-4A14-9007-2C90CF58D775}.Azure Isolated Debug|Any CPU.Build.0 = Azure Isolated Debug|Any CPU
+		{0EA550F9-F645-4A14-9007-2C90CF58D775}.Azure Isolated Release|Any CPU.ActiveCfg = Azure Isolated Release|Any CPU
+		{0EA550F9-F645-4A14-9007-2C90CF58D775}.Azure Isolated Release|Any CPU.Build.0 = Azure Isolated Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F199E402-30DD-4396-A48F-8B0E0BF739A8} = {772A86FC-B6A5-4104-8E4F-0D17F679EDE1}
+		{9E8556B2-53AD-4CFD-AD46-C0FEACF2D290} = {E0DF2652-5348-451A-BA1D-D521FF5AF840}
+		{B25D309F-BEB6-405E-8580-FF899A288133} = {250CBC68-CE39-410B-8B57-3E707E8F420B}
+		{0EA550F9-F645-4A14-9007-2C90CF58D775} = {250CBC68-CE39-410B-8B57-3E707E8F420B}
 	EndGlobalSection
 EndGlobal

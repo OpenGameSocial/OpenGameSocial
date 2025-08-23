@@ -3,8 +3,8 @@ include(CheckFunctionExists)
 
 FetchContent_Declare(
         libwebsockets
-        GIT_REPOSITORY https://github.com/warmcat/libwebsockets.git
-        GIT_TAG v4.4.1
+        GIT_REPOSITORY https://github.com/OpenGameSocial/libwebsockets.git
+        GIT_TAG ogs
 )
 
 set(LWS_WITH_MBEDTLS ON CACHE BOOL "" FORCE)
@@ -31,18 +31,6 @@ else ()
     set(MBEDX509_LIBRARY "${mbedtls_BINARY_DIR}/library/libmbedx509.a" CACHE FILEPATH "" FORCE)
     set(MBEDCRYPTO_LIBRARY "${mbedtls_BINARY_DIR}/library/libmbedcrypto.a" CACHE FILEPATH "" FORCE)
 endif ()
-
-set(CMAKE_REQUIRED_INCLUDES
-        "${MBEDTLS_INCLUDE_DIRS}"
-)
-set(CMAKE_REQUIRED_LIBRARIES
-        "${MBEDTLS_LIBRARY}"
-        "${MBEDX509_LIBRARY}"
-        "${MBEDCRYPTO_LIBRARY}"
-        ${MBEDTLS_SYSTEM_LIBS}
-)
-
-set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 FetchContent_MakeAvailable(libwebsockets)
 

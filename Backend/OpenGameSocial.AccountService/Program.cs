@@ -1,9 +1,23 @@
-﻿namespace OpenGameSocial.AccountService;
+﻿using OpenGameSocial.Core.DependencyInjection;
+using OpenGameSocial.Plugins;
+using OpenGameSocial.Vendor;
 
-internal static class Program
+namespace OpenGameSocial.AccountService;
+
+internal class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
-        
+        await PluginManager.Instance.Load(args);
+
+        var builder = VendorStartup<Program>.Create(args);
+        builder.AddOpenGameSocial();
+        builder.RegisterServices();
+
+        PluginManager.Instance.RunInit(builder);
+
+        var app = VendorStartup<Program>.Build(builder);
+
+        await VendorStartup<Program>.Run(app);
     }
 }

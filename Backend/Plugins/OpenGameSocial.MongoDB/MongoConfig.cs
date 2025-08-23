@@ -1,5 +1,8 @@
-namespace OpenGameSocial.Core.Config;
+﻿using OpenGameSocial.Abstractions.DependencyInjection;
 
+namespace OpenGameSocial.MongoDB;
+
+[RegisterConfiguration("MongoConfig")]
 public class MongoConfig
 {
     public required string ConnectionString { get; init; }

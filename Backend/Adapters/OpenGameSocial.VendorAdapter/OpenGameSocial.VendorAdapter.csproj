@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Configurations>WebAPI Release;WebAPI Debug;Azure InProcess Debug;Azure InProcess Release;Azure Isolated Debug;Azure Isolated Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" $([System.String]::Copy('$(Configuration)').Contains('Debug')) ">
+        <DefineConstants>TRACE;DEBUG</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" $([System.String]::Copy('$(Configuration)').Contains('Release')) ">
+        <Optimize>true</Optimize>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\OpenGameSocial.WebApi\OpenGameSocial.WebApi.csproj" Condition=" $([System.String]::Copy('$(Configuration)').Contains('WebAPI')) " />
+    </ItemGroup>
+
+</Project>
