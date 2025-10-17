@@ -2,7 +2,7 @@ include(FetchContent)
 
 FetchContent_Declare(
         mbedtls
-        GIT_REPOSITORY https://github.com/ARMmbed/mbedtls.git
+        GIT_REPOSITORY https://github.com/OpenGameSocial/mbedtls.git
         GIT_TAG mbedtls-3.6.4
         OVERRIDE_FIND_PACKAGE
 )

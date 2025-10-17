@@ -38,9 +38,15 @@
 #endif
 
 #ifdef PLATFORM_WINDOWS
-    #define DEBUG_BREAK __debugbreak
+    #define DEBUG_BREAK() __debugbreak()
+#elif defined(PLATFORM_MACOS)
+    #define DEBUG_BREAK() __builtin_debugtrap()
+#elif defined(PLATFORM_LINUX) && defined(__GNUC__)
+    #include <signal.h>
+    #define DEBUG_BREAK() raise(SIGTRAP)
 #else
-    #define DEBUG_BREAK __builtin_debugtrap
+    #include <signal.h>
+    #define DEBUG_BREAK() raise(SIGTRAP)
 #endif
 
 #define CHECK(expr)
