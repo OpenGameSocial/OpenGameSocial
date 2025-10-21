@@ -1,0 +1,2 @@
+SetExtensionEnabled(BsdSocket)
+SetExtensionEnabled(LWS)

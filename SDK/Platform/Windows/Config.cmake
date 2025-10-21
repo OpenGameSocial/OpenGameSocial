@@ -1,0 +1,2 @@
+SetExtensionEnabled(WinSocket)
+SetExtensionEnabled(LWS)

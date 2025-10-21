@@ -57,7 +57,7 @@ int main()
     {
         OGS_Platform_Tick(0.1);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        // std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     return 0;

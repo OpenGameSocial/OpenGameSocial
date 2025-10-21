@@ -1,1 +1,1 @@
-set(OGS_LIBS ${OGS_LIBS} mbedtls libcurl PARENT_SCOPE)
+set(OGS_LIBS ${OGS_LIBS} mbedtls libwebsockets libcurl PARENT_SCOPE)

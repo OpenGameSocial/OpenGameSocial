@@ -1,1 +1,1 @@
-SetExtensionEnabled(TRUE)
+SetCurrentExtensionEnabled(TRUE)

@@ -19,11 +19,15 @@ endif ()
 
 set(PLATFORM_CONFIG "${PLATFORM_SRC}/Config.cmake")
 
-if (EXISTS "${PLATFORM_CONFIG}")
-    include("${PLATFORM_CONFIG}")
-endif ()
-
 include("${EXTENSIONS_SRC}/Config.cmake")
+
+if (EXISTS "${PLATFORM_CONFIG}")
+    message("Begin configuring ${CMAKE_SYSTEM_NAME} platform")
+    include("${PLATFORM_CONFIG}")
+    message("End configuring ${CMAKE_SYSTEM_NAME} platform")
+else ()
+    message("Platform ${CMAKE_SYSTEM_NAME} has no Config.cmake, skipping")
+endif ()
 
 set(STAMP_FILE "${CMAKE_BINARY_DIR}/codegen.stamp")
 

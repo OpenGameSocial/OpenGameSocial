@@ -1,4 +1,10 @@
+GetEnabledExtensions(ENABLED_EXTENSIONS)
+
+list(REMOVE_DUPLICATES ENABLED_EXTENSIONS)
+
 foreach (EXTENSION IN LISTS ENABLED_EXTENSIONS)
+    message("Adding enabled extension ${EXTENSION}")
+
     file(GLOB_RECURSE EXT_SOURCES ${CMAKE_SOURCE_DIR}/Extensions/${EXTENSION}/Source/*.cpp)
 
     target_sources(SDK PRIVATE ${EXT_SOURCES})

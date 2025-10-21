@@ -2,11 +2,12 @@
 
 #include <string>
 
-#include "Core/Common/Delegate.h"
-#include "Core/Common/Guid.h"
 #include "HttpEnums.h"
 #include "HttpResponse.h"
 #include "Platform.h"
+#include "Core/Common/Delegate.h"
+#include "Core/Common/Guid.h"
+#include "Core/Http/Uri.h"
 
 
 namespace OGS::Http
