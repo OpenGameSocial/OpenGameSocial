@@ -40,10 +40,15 @@ public:
         {
             if (Socket.ReceiveFrom(Buffer, ClientAddress))
             {
-                auto Msg = *reinterpret_cast<int*>(Buffer.data());
-                LogOpenGameSocial.Verbose("Received msg [{0}]", Msg);
+                static int MsgCount = 0;
 
-                Socket.SendTo(Buffer, ClientAddress);
+                auto Msg = *reinterpret_cast<int*>(Buffer.data());
+                LogOpenGameSocial.Verbose("Received msg [{0}] - {1}", Msg, ++MsgCount);
+
+                for (int i = 0; i < 10; ++i)
+                {
+                    Socket.SendTo(Buffer, ClientAddress);
+                }
             }
 
             Socket.Tick();
